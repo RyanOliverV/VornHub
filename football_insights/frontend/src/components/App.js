@@ -7,11 +7,12 @@ import { ColorModeContext, useMode } from "../theme";
 import Topbar from "../scenes/global/Topbar.jsx";
 import Sidebar from "../scenes/global/Sidebar.jsx";
 import Dashboard from "../scenes/dashboard/index.jsx";
-// import Livescores from '../scenes/livescores/index.jsx';
-// import Fixtures from '../scenes/fixtures/index.jsx';
-// import LeagueTable from '../scenes/leaguetable/index.jsx';
-// import TeamStats from '../scenes/teamstats/index.jsx';
-// import PlayerStats from '../scenes/playerstats/index.jsx';
+import LiveScores from '../scenes/livescores/index.jsx';
+import Fixtures from '../scenes/fixtures/index.jsx';
+import ScorePrediction from "../scenes/scoreprediction/index.jsx";
+import LeagueTable from '../scenes/leaguetable/index.jsx';
+import TeamStats from '../scenes/teamstats/index.jsx';
+import PlayerStats from '../scenes/playerstats/index.jsx';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -24,16 +25,15 @@ function App() {
           <Sidebar />
           <main className="content">
             <Topbar />
-            <Router>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
-                {/* <Route path="/livescores" element={<Livescores />} /> */}
-                {/* <Route path="/fixtures" element={<Fixtures />} /> */}
-                {/* <Route path="/leaguetable" element={<LeagueTable />} /> */}
-                {/* <Route path="/teamstats" element={<TeamStats />} /> */}
-                {/* <Route path="/playerstats" element={<PlayerStats />} /> */}
+                <Route path="/livescores" element={<LiveScores />} />
+                <Route path="/fixtures" element={<Fixtures />} />
+                <Route path="/predictions" element={<ScorePrediction />} />
+                <Route path="/leaguetable" element={<LeagueTable />} />
+                <Route path="/teamstats" element={<TeamStats />} />
+                <Route path="/playerstats" element={<PlayerStats /> }/>
               </Routes>
-            </Router>
           </main>
         </div>
       </ThemeProvider>

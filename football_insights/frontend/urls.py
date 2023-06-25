@@ -3,6 +3,10 @@ from .views import index
 
 urlpatterns = [
     path('', index),
-    path('join', index),
-    path('create', index),
+    path('livescores', index),
+    path('fixtures', index),
+    path('predictions', index),
+    path('leaguetable', index),
+    path('teamstats', index),
+    path('playerstats', index),
 ]
