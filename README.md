@@ -1,2 +1,2 @@
 # VornHub
-A website that offers real-time access to football scores in the Premier League, including player line-ups and detailed statistics such as shots, passes completed, possession percentage, and expected goals (xG).
+website providing users with real-time access to comprehensive football statistics from the Premier League. Our platform offers a wealth of information, including player line-ups and in-depth analytics such as shots, passes completed, possession percentage, and expected goals (xG).
