@@ -7,6 +7,7 @@ urlpatterns = [
     path('fixtures', index),
     path('predictions', index),
     path('leaguetable', index),
-    path('teamstats', index),
-    path('playerstats', index),
+    path('teams', index),
+    path('teams/<int:id>', index),
+    path('players', index),
 ]

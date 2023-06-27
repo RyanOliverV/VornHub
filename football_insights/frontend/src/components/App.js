@@ -11,8 +11,9 @@ import LiveScores from '../scenes/livescores/index.jsx';
 import Fixtures from '../scenes/fixtures/index.jsx';
 import ScorePrediction from "../scenes/scoreprediction/index.jsx";
 import LeagueTable from '../scenes/leaguetable/index.jsx';
-import TeamStats from '../scenes/teamstats/index.jsx';
-import PlayerStats from '../scenes/playerstats/index.jsx';
+import TeamStats from '../scenes/teams/index.jsx';
+import TeamDetails from "../scenes/teams/stats.jsx";
+import PlayerStats from '../scenes/players/index.jsx';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -31,8 +32,9 @@ function App() {
                 <Route path="/fixtures" element={<Fixtures />} />
                 <Route path="/predictions" element={<ScorePrediction />} />
                 <Route path="/leaguetable" element={<LeagueTable />} />
-                <Route path="/teamstats" element={<TeamStats />} />
-                <Route path="/playerstats" element={<PlayerStats /> }/>
+                <Route path="/teams/" element={<TeamStats />} />
+                <Route path="/teams/:id" element={<TeamDetails />} />
+                <Route path="/players" element={<PlayerStats /> }/>
               </Routes>
           </main>
         </div>
