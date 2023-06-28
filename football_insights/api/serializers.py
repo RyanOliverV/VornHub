@@ -8,6 +8,7 @@ from rest_framework import serializers
 class TeamSerializer(serializers.Serializer):
     id = serializers.IntegerField(source='team.id', default=None)
     name = serializers.CharField(source='team.name', max_length=100, default=None)
+    logo = serializers.CharField(source='team.logo', max_length=100, default=None)
     
 class TeamDetailSerializer(serializers.Serializer):
     id = serializers.IntegerField(source='team.id', default=None)

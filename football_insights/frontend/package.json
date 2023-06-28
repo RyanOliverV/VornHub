@@ -30,6 +30,7 @@
     "css-loader": "^6.8.1",
     "react-pro-sidebar": "^0.7.1",
     "react-router-dom": "^6.14.0",
+    "react-window": "^1.8.9",
     "style-loader": "^3.3.3"
   }
 }
