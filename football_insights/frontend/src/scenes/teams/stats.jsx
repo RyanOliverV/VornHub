@@ -25,7 +25,7 @@ const TeamDetails = () => {
             <h4>Year Founded: {team.founded} </h4>
             <h4>Country: {team.country} </h4>
             <h4>Stadium: {team.stadium_name} </h4>
-            <h4>Average Attendance: {team.attendance} </h4>
+            <h4>Capacity: {team.capacity} </h4>
           </div>
         </div>
       </Box>
