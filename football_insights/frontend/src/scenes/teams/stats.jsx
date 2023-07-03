@@ -22,11 +22,10 @@ const TeamDetails = () => {
         <div>
           <div>
             <h3>{team.name}</h3>
-            <h4>Current Form: {team.current_form} </h4>
-            <h4>Played Total: {team.played_total} </h4>
-            <h4>Wins: {team.wins} </h4>
-            <h4>Draws: {team.draws} </h4>
-            <h4>Losses: {team.losses} </h4>
+            <h4>Year Founded: {team.founded} </h4>
+            <h4>Country: {team.country} </h4>
+            <h4>Stadium: {team.stadium_name} </h4>
+            <h4>Average Attendance: {team.attendance} </h4>
           </div>
         </div>
       </Box>
