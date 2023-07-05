@@ -1,63 +1,96 @@
-from django.shortcuts import render
-from rest_framework import generics, status
-
 import requests
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import TeamSerializer, TeamDetailSerializer, AllTeamsDetailSerializer
+from .serializers import TeamSerializer, TeamDetailSerializer, LeagueTableSerializer
+from datetime import date
 
-#SoccerMonks API Token: LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu
-        
+# SoccerMonks API Token: LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu
+
+
+class SeasonList(APIView):
+    def get(self, request):
+        # Retrieve the seasons for a particular league
+        url = "https://api.sportmonks.com/v3/football/seasons/search/2022?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu"
+        # Send a GET request to the specified URL
+        response = requests.get(url)
+        # Parse the response as JSON
+        data = response.json()
+        # Extract the season data from the JSON response
+        seasons = data["data"]
+        # Filter and keep only the seasons for a specific league (league_id = 8)
+        pl_seasons = [season for season in seasons if season["league_id"] == 8]
+        # Return the filtered seasons as a response
+        return Response(pl_seasons)
+
+
+class LeagueTable(APIView):
+    def get(self, request, season_id):
+        # Construct the URL to fetch the league table for a specific season
+        url = f"https://api.sportmonks.com/v3/football/standings/seasons/{season_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=participant;details.type"
+        # Send a GET request to the specified URL
+        response = requests.get(url)
+        # Parse the response as JSON
+        data = response.json()
+        # Extract the standings data from the JSON response
+        standings = data["data"]
+        # Serialize the standings data using the LeagueTableSerializer
+        serializer = LeagueTableSerializer(standings, many=True)
+        # Return the serialized data as a response
+        return Response(serializer.data)
+
+
+class LiveLeagueTable(APIView):
+    def get(self, request):
+        # Get the current date
+        today = date.today()
+        # Define the start date of the Premier League season
+        start_date = date(2023, 8, 11)
+        # Check if the current date is greater than or equal to the start date
+        if today >= start_date:
+            # Construct the URL to fetch the live league table for the Premier League
+            url = "https://api.sportmonks.com/v3/football/standings/live/leagues/8?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=participant;details.type"
+            # Send a GET request to the specified URL
+            response = requests.get(url)
+            # Parse the response as JSON
+            data = response.json()
+            # Extract the standings data from the JSON response
+            standings = data["data"]
+            # Serialize the standings data using the LeagueTableSerializer
+            serializer = LeagueTableSerializer(standings, many=True)
+            # Return the serialized data as a response
+            return Response(serializer.data)
+        else:
+            # Return an empty response if the Premier League season has not started yet
+            return Response([])
+
+
 class TeamsList(APIView):
     def get(self, request):
+        # Define the API endpoint URL to fetch teams data for a specific season
         url = "https://api.sportmonks.com/v3/football/teams/seasons/21646?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu"
-
+        # Send a GET request to the API endpoint
         response = requests.get(url)
+        # Extract the JSON data from the response
         data = response.json()
+        # Access the "data" key in the JSON response, which contains the teams information
         teams = data["data"]
-
+        # Create a serializer instance to serialize the teams data
         serializer = TeamSerializer(teams, many=True)
-
+        # Return the serialized data as a response
         return Response(serializer.data)
 
 
 class TeamDetail(APIView):
     def get(self, request, id):
+        # Define the API endpoint URL to fetch detailed information about a specific team
         url = f"https://api.sportmonks.com/v3/football/teams/{id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=venue;country"
-
+        # Send a GET request to the API endpoint
         response = requests.get(url)
+        # Extract the JSON data from the response
         data = response.json()
+        # Access the "data" key in the JSON response, which contains the team information
         team = data["data"]
-        
+        # Create a serializer instance to serialize the team data
         serializer = TeamDetailSerializer(team)
-        
+        # Return the serialized data as a response
         return Response(serializer.data)
-        
-        # season = "2022/2023"  # Specify the desired season
-        
-        # filtered_team = [t for t in team if t["season"] == season]
-        
-        # if filtered_team:
-        #     serializer = TeamDetailSerializer(filtered_team[0])
-        #     return Response(serializer.data)
-        # else:
-        #     return Response({"error": f"No data available for season {season}"}, status=status.HTTP_404_NOT_FOUND)
-        
-# class AllTeamsDetail(APIView):
-#     def get(self, request):
-#         url = "https://api.football-data-api.com/league-teams?key=example&season_id=2012&include=stats"
-
-#         response = requests.get(url)
-#         data = response.json()
-#         team = data["data"]
-        
-#         selected_team = "Chelsea FC"  # Specify the desired season
-        
-#         filtered_team = [t for t in team if t["name"] == selected_team]
-        
-#         if filtered_team:
-#             serializer = AllTeamsDetailSerializer(filtered_team[0])
-#             return Response(serializer.data)
-#         else:
-#             return Response({"error": f"No data available for season {selected_team}"}, status=status.HTTP_404_NOT_FOUND)
