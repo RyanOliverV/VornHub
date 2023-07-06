@@ -234,7 +234,8 @@ const LeagueTable = () => {
               {sortedStandings.map((team) => (
                 <TableRow key={team.id}>
                   <TableCell>{team.position}</TableCell>
-                  <TableCell style={{ display: "flex", alignItems: "center" }}>
+                  <TableCell>
+                  <Box display="flex" alignItems="center">
                     {/* Team logo and name */}
                     <img
                       src={team.logo}
@@ -242,6 +243,7 @@ const LeagueTable = () => {
                       alt="Team Logo"
                     />
                     {team.team}
+                  </Box>
                   </TableCell>
                   {/* League Table values */}
                   <TableCell>{team.played_value}</TableCell>
