@@ -28,7 +28,7 @@ const LeagueTable = () => {
     key: "position",
     direction: "asc",
   });
-  const [selectedSeason, setSelectedSeason] = useState("21646"); // Holds the selected season ID
+  const [selectedSeason, setSelectedSeason] = useState("21207"); // Holds the selected season ID
 
   // Fetch data when the selected season changes
   useEffect(() => {
@@ -37,12 +37,8 @@ const LeagueTable = () => {
 
   // Fetches the standings data based on the selected season
   const fetchData = async (season) => {
-    try {
-      const currentDate = new Date();
-      const startDate = new Date("2023-08-11"); // Start date of the Premier League season
-
-      if (season === "21646" && currentDate >= startDate) {
-        // Fetch live standings if the selected season is the current season and the Premier League has started
+      if (season === "21207") {
+        // Fetch live standings if the selected season is the current season
         const response = await fetch("/api/live-standings/");
         const data = await response.json();
         setStandings(data);
@@ -55,10 +51,7 @@ const LeagueTable = () => {
         // If no season is selected, set the standings to an empty array
         setStandings([]);
       }
-    } catch (error) {
-      console.error(error);
     }
-  };
 
   // Handles sorting of the table based on the clicked column
   const handleSort = (key) => {
@@ -98,9 +91,14 @@ const LeagueTable = () => {
           label="Season_Select"
           onChange={handleSeasonChange}
         >
-          <MenuItem value="21646">2023/24</MenuItem>
-          <MenuItem value="19734">2022/23</MenuItem>
-          <MenuItem value="18378">2021/22</MenuItem>
+          <MenuItem value="21207">2023</MenuItem>
+          <MenuItem value="19434">2022</MenuItem>
+          <MenuItem value="18215">2021</MenuItem>
+          <MenuItem value="16996">2020</MenuItem>
+          <MenuItem value="15759">2019</MenuItem>
+          <MenuItem value="12206">2018</MenuItem>
+          <MenuItem value="866">2017</MenuItem>
+          <MenuItem value="2280">2016</MenuItem>
         </Select>
       </FormControl>
 
@@ -263,5 +261,4 @@ const LeagueTable = () => {
     </Box>
   );
 };
-
 export default LeagueTable;

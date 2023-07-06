@@ -10,17 +10,15 @@ from datetime import date
 class SeasonList(APIView):
     def get(self, request):
         # Retrieve the seasons for a particular league
-        url = "https://api.sportmonks.com/v3/football/seasons/search/2022?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu"
+        url = "https://api.sportmonks.com/v3/football/seasons/teams/303/?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&page=2"
         # Send a GET request to the specified URL
         response = requests.get(url)
         # Parse the response as JSON
         data = response.json()
         # Extract the season data from the JSON response
         seasons = data["data"]
-        # Filter and keep only the seasons for a specific league (league_id = 8)
-        pl_seasons = [season for season in seasons if season["league_id"] == 8]
         # Return the filtered seasons as a response
-        return Response(pl_seasons)
+        return Response(seasons)
 
 
 class LeagueTable(APIView):
@@ -41,33 +39,24 @@ class LeagueTable(APIView):
 
 class LiveLeagueTable(APIView):
     def get(self, request):
-        # Get the current date
-        today = date.today()
-        # Define the start date of the Premier League season
-        start_date = date(2023, 8, 11)
-        # Check if the current date is greater than or equal to the start date
-        if today >= start_date:
-            # Construct the URL to fetch the live league table for the Premier League
-            url = "https://api.sportmonks.com/v3/football/standings/live/leagues/8?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=participant;details.type"
-            # Send a GET request to the specified URL
-            response = requests.get(url)
-            # Parse the response as JSON
-            data = response.json()
-            # Extract the standings data from the JSON response
-            standings = data["data"]
-            # Serialize the standings data using the LeagueTableSerializer
-            serializer = LeagueTableSerializer(standings, many=True)
-            # Return the serialized data as a response
-            return Response(serializer.data)
-        else:
-            # Return an empty response if the Premier League season has not started yet
-            return Response([])
+        # Construct the URL to fetch the live league table for the Serie A
+        url = "https://api.sportmonks.com/v3/football/standings/live/leagues/648?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=participant;details.type"
+        # Send a GET request to the specified URL
+        response = requests.get(url)
+        # Parse the response as JSON
+        data = response.json()
+        # Extract the standings data from the JSON response
+        standings = data["data"]
+        # Serialize the standings data using the LeagueTableSerializer
+        serializer = LeagueTableSerializer(standings, many=True)
+        # Return the serialized data as a response
+        return Response(serializer.data)
 
 
 class TeamsList(APIView):
     def get(self, request):
         # Define the API endpoint URL to fetch teams data for a specific season
-        url = "https://api.sportmonks.com/v3/football/teams/seasons/21646?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu"
+        url = "https://api.sportmonks.com/v3/football/teams/seasons/21207?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu"
         # Send a GET request to the API endpoint
         response = requests.get(url)
         # Extract the JSON data from the response
