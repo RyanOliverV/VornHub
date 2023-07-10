@@ -10,4 +10,5 @@ urlpatterns = [
          name='live-standings-api'),
     path('standings/<int:season_id>/', views.LeagueTable.as_view(),
          name='standings-api-with-season'),
+    path('fixtures/', views.FixtureList.as_view(), name='fixtures-api'),
 ]

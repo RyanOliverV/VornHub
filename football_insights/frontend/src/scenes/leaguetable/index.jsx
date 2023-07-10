@@ -80,7 +80,7 @@ const LeagueTable = () => {
   });
 
   return (
-    <Box m="20px 70px 70px">
+    <Box m="20px 70px">
       {/* Season select dropdown */}
       <FormControl sx={{ m: 1, minWidth: 120 }}>
         <InputLabel id="season-select-label">Season</InputLabel>

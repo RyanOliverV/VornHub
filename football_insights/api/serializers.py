@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from datetime import datetime
 
 
 class TeamSerializer(serializers.Serializer):
@@ -131,3 +132,43 @@ class LeagueTableSerializer(serializers.Serializer):
         ga_value = self.get_ga_value(instance)
 
         return gf_value - ga_value
+
+
+class FixturesSerializer(serializers.Serializer):
+    id = serializers.IntegerField(default=None)
+    team1 = serializers.SerializerMethodField()
+    team2 = serializers.SerializerMethodField()
+    date = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
+
+    def get_team1(self, obj):
+        team_names = obj.get("name")
+        if team_names:
+            team_list = team_names.split(" vs ")
+            return team_list[0]
+        return None
+
+    def get_team2(self, obj):
+        team_names = obj.get("name")
+        if team_names:
+            team_list = team_names.split(" vs ")
+            return team_list[1]
+        return None
+
+    def get_date(self, obj):
+        starting_at = obj.get("starting_at")
+        if starting_at:
+            date_str, time_str = starting_at.split(" ")
+            datetime_obj = datetime.strptime(date_str, "%Y-%m-%d")
+            uk_date_str = datetime_obj.strftime("%d/%m/%Y")
+            return uk_date_str
+        return None
+
+    def get_time(self, obj):
+        starting_at = obj.get("starting_at")
+        if starting_at:
+            date_str, time_str = starting_at.split(" ")
+            time_obj = datetime.strptime(time_str, "%H:%M:%S")
+            time_str = time_obj.strftime("%H:%M")
+            return time_str
+        return None

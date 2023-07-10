@@ -1,7 +1,8 @@
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import TeamSerializer, TeamDetailSerializer, LeagueTableSerializer
+from rest_framework import status
+from .serializers import TeamSerializer, TeamDetailSerializer, LeagueTableSerializer, FixturesSerializer
 from datetime import date
 
 # SoccerMonks API Token: LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu
@@ -82,4 +83,21 @@ class TeamDetail(APIView):
         # Create a serializer instance to serialize the team data
         serializer = TeamDetailSerializer(team)
         # Return the serialized data as a response
+        return Response(serializer.data)
+
+
+class FixtureList(APIView):
+    def get(self, request):
+        # Define the API endpoint URL to fetch detailed information about fixtures
+        url = "https://api.sportmonks.com/v3/football/seasons/21207?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=fixtures"
+        # Send a GET request to the API endpoint
+        response = requests.get(url)
+        data = response.json()
+        fixtures = data["data"]["fixtures"]
+
+        # Sort fixtures by starting_at in ascending order (earliest first)
+        fixtures = sorted(fixtures, key=lambda x: x.get("starting_at"))
+
+        serializer = FixturesSerializer(fixtures, many=True)
+
         return Response(serializer.data)
