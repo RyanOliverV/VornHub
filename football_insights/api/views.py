@@ -89,7 +89,7 @@ class TeamDetail(APIView):
 class FixtureList(APIView):
     def get(self, request):
         # Define the API endpoint URL to fetch detailed information about fixtures
-        url = "https://api.sportmonks.com/v3/football/seasons/21207?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=fixtures"
+        url = "https://api.sportmonks.com/v3/football/seasons/21207?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=fixtures.scores;fixtures.venue"
         # Send a GET request to the API endpoint
         response = requests.get(url)
         data = response.json()

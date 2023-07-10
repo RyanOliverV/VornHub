@@ -140,6 +140,9 @@ class FixturesSerializer(serializers.Serializer):
     team2 = serializers.SerializerMethodField()
     date = serializers.SerializerMethodField()
     time = serializers.SerializerMethodField()
+    home_score = serializers.SerializerMethodField()
+    away_score = serializers.SerializerMethodField()
+    stadium = serializers.CharField(source='venue.name', default=None)
 
     def get_team1(self, obj):
         team_names = obj.get("name")
@@ -171,4 +174,18 @@ class FixturesSerializer(serializers.Serializer):
             time_obj = datetime.strptime(time_str, "%H:%M:%S")
             time_str = time_obj.strftime("%H:%M")
             return time_str
+        return None
+
+    def get_home_score(self, obj):
+        scores = obj.get("scores", [])
+        for score in scores:
+            if score.get("description") == "CURRENT" and score.get("score", {}).get("participant") == "home":
+                return score.get("score", {}).get("goals")
+        return None
+
+    def get_away_score(self, obj):
+        scores = obj.get("scores", [])
+        for score in scores:
+            if score.get("description") == "CURRENT" and score.get("score", {}).get("participant") == "away":
+                return score.get("score", {}).get("goals")
         return None
