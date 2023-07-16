@@ -11,6 +11,8 @@ import {
   TableSortLabel,
   useTheme,
 } from "@mui/material";
+import { Link } from "react-router-dom";
+import { styled } from "@mui/system";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -37,21 +39,21 @@ const LeagueTable = () => {
 
   // Fetches the standings data based on the selected season
   const fetchData = async (season) => {
-      if (season === "21207") {
-        // Fetch live standings if the selected season is the current season
-        const response = await fetch("/api/live-standings/");
-        const data = await response.json();
-        setStandings(data);
-      } else if (season) {
-        // Fetch standings for a specific season
-        const response = await fetch(`/api/standings/${season}`);
-        const data = await response.json();
-        setStandings(data);
-      } else {
-        // If no season is selected, set the standings to an empty array
-        setStandings([]);
-      }
+    if (season === "21207") {
+      // Fetch live standings if the selected season is the current season
+      const response = await fetch("/api/live-standings/");
+      const data = await response.json();
+      setStandings(data);
+    } else if (season) {
+      // Fetch standings for a specific season
+      const response = await fetch(`/api/standings/${season}`);
+      const data = await response.json();
+      setStandings(data);
+    } else {
+      // If no season is selected, set the standings to an empty array
+      setStandings([]);
     }
+  };
 
   // Handles sorting of the table based on the clicked column
   const handleSort = (key) => {
@@ -78,6 +80,13 @@ const LeagueTable = () => {
     }
     return 0;
   });
+
+  const HoverTableRow = styled(TableRow)(({ theme }) => ({
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light,
+      cursor: "pointer",
+    },
+  }));
 
   return (
     <Box m="20px 70px">
@@ -230,18 +239,23 @@ const LeagueTable = () => {
             <TableBody>
               {/* Render each team's data */}
               {sortedStandings.map((team) => (
-                <TableRow key={team.id}>
+                <HoverTableRow
+                  key={team.id}
+                  component={Link}
+                  to={`/teams/${team.id}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
                   <TableCell>{team.position}</TableCell>
                   <TableCell>
-                  <Box display="flex" alignItems="center">
-                    {/* Team logo and name */}
-                    <img
-                      src={team.logo}
-                      style={{ marginRight: "10px", maxWidth: "40px" }}
-                      alt="Team Logo"
-                    />
-                    {team.team}
-                  </Box>
+                    <Box display="flex" alignItems="center">
+                      {/* Team logo and name */}
+                      <img
+                        src={team.logo}
+                        style={{ marginRight: "10px", maxWidth: "40px" }}
+                        alt="Team Logo"
+                      />
+                      {team.team}
+                    </Box>
                   </TableCell>
                   {/* League Table values */}
                   <TableCell>{team.played_value}</TableCell>
@@ -252,7 +266,7 @@ const LeagueTable = () => {
                   <TableCell>{team.ga_value}</TableCell>
                   <TableCell>{team.gd_value}</TableCell>
                   <TableCell>{team.points}</TableCell>
-                </TableRow>
+                </HoverTableRow>
               ))}
             </TableBody>
           </Table>

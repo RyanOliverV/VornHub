@@ -1,5 +1,13 @@
 from rest_framework import serializers
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.serializers import Serializer
 from datetime import datetime
+
+
+class CustomPagination(PageNumberPagination):
+    page_size = 10  # Set the number of items per page
+    page_size_query_param = 'page_size'  # Customize the page size query parameter
+    max_page_size = 100  # Set the maximum allowed page size
 
 
 class TeamSerializer(serializers.Serializer):
@@ -18,6 +26,14 @@ class TeamDetailSerializer(serializers.Serializer):
     stadium_name = serializers.CharField(
         source='venue.name', max_length=100, default=None)
     capacity = serializers.IntegerField(source='venue.capacity', default=None)
+
+
+class PlayerSerializer(serializers.Serializer):
+    id = serializers.IntegerField(source='player.id', default=None)
+    name = serializers.CharField(
+        source='player.name', max_length=100, default=None)
+    image = serializers.CharField(
+        source='player.image_path', max_length=100, default=None)
 
 
 class LeagueTableSerializer(serializers.Serializer):
@@ -143,6 +159,8 @@ class FixturesSerializer(serializers.Serializer):
     home_score = serializers.SerializerMethodField()
     away_score = serializers.SerializerMethodField()
     stadium = serializers.CharField(source='venue.name', default=None)
+    team1_logo = serializers.SerializerMethodField()
+    team2_logo = serializers.SerializerMethodField()
 
     def get_team1(self, obj):
         team_names = obj.get("name")
@@ -188,4 +206,25 @@ class FixturesSerializer(serializers.Serializer):
         for score in scores:
             if score.get("description") == "CURRENT" and score.get("score", {}).get("participant") == "away":
                 return score.get("score", {}).get("goals")
+        return None
+
+    def get_team_logo(self, participant):
+        meta = participant.get("meta", {})
+        location = meta.get("location")
+        if location == "home":
+            return participant.get("image_path")
+        elif location == "away":
+            return participant.get("image_path")
+        return None
+
+    def get_team1_logo(self, obj):
+        participants = obj.get("participants", [])
+        if len(participants) > 0:
+            return self.get_team_logo(participants[0])
+        return None
+
+    def get_team2_logo(self, obj):
+        participants = obj.get("participants", [])
+        if len(participants) > 1:
+            return self.get_team_logo(participants[1])
         return None

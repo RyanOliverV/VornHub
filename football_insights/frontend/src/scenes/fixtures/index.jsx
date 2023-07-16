@@ -3,10 +3,6 @@ import { Link } from "react-router-dom";
 import {
   Box,
   useTheme,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
   Typography,
   Table,
   TableBody,
@@ -15,7 +11,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { flexbox, styled } from "@mui/system";
+import { styled } from "@mui/system";
+import StadiumOutlinedIcon from "@mui/icons-material/StadiumOutlined";
 import { tokens } from "../../theme";
 
 const Fixtures = () => {
@@ -29,8 +26,12 @@ const Fixtures = () => {
     },
   }));
 
-  const StyledTableCell = styled(TableCell)({
-    width: "10%",
+  const TeamTableCell = styled(TableCell)({
+    width: "40%",
+  });
+
+  const ResultTableCell = styled(TableCell)({
+    width: "20%",
   });
 
   const [fixtures, setFixtures] = useState([]);
@@ -61,73 +62,100 @@ const Fixtures = () => {
   });
 
   return (
-<Box style={{ margin: "20px", display: "flex", justifyContent: "center" }}>
-  <Box style={{ width: "100%", maxWidth: 1400 }}>
-    <Box style={{ height: "90vh", overflow: "auto", padding: "10px" }}>
-      {Object.entries(groupedFixtures).map(([date, fixtures]) => (
-        <div key={date}>
-          <Typography m="20px 0px" variant="h4" component="h4">
-            {date}
-          </Typography>
-          <TableContainer>
-            <Table sx={{ bgcolor: colors.primary[400] }}>
-              <TableBody>
-                {fixtures.map((fixture) => (
-                  <HoverTableRow
-                    key={fixture.id}
-                    component={Link}
-                    to={`/fixtures/${fixture.id}`}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    <StyledTableCell align="center">
-                      {fixture.team1}
-                    </StyledTableCell>
-                    <TableCell align="center">
-                      {fixture.home_score === null &&
-                      fixture.away_score === null ? (
-                        <span
-                          style={{
-                            margin: "10px",
-                            padding: "10px",
-                            borderRadius: "4px",
-                            border: `1px solid ${colors.primary[300]}`,
-                            backgroundColor: colors.primary[400],
-                            width: "100%",
-                          }}
+    <Box style={{ margin: "20px", display: "flex", justifyContent: "center" }}>
+      <Box style={{ width: "100%", maxWidth: 1000 }}>
+        <Box style={{ height: "90vh", overflow: "auto", paddingRight: "50px" }}>
+          {Object.entries(groupedFixtures).map(([date, fixtures]) => (
+            <div key={date}>
+              <Typography m="20px 0px" variant="h4" component="h4">
+                {date}
+              </Typography>
+              <TableContainer>
+                <Table sx={{ bgcolor: colors.primary[400] }}>
+                  <TableBody>
+                    {fixtures.map((fixture) => (
+                      <HoverTableRow
+                        key={fixture.id}
+                        component={Link}
+                        to={`/fixtures/${fixture.id}`}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        <TeamTableCell align="center">
+                          <img
+                            src={fixture.team1_logo}
+                            style={{
+                              margin: "5px",
+                              maxWidth: "30px",
+                              verticalAlign: "middle",
+                            }}
+                            alt="Team Logo"
+                          />
+                          {fixture.team1}
+                        </TeamTableCell>
+                        <ResultTableCell align="center">
+                          {fixture.home_score === null &&
+                          fixture.away_score === null ? (
+                            <span
+                              style={{
+                                margin: "10px",
+                                padding: "10px",
+                                borderRadius: "4px",
+                                border: `1px solid ${colors.primary[300]}`,
+                                backgroundColor: colors.primary[400],
+                                width: "100%",
+                              }}
+                            >
+                              {fixture.time}
+                            </span>
+                          ) : (
+                            <span
+                              style={{
+                                margin: "10px",
+                                padding: "10px",
+                                borderRadius: "4px",
+                                border: `1px solid ${colors.primary[300]}`,
+                                backgroundColor: colors.primary[400],
+                                width: "100%",
+                              }}
+                            >
+                              {fixture.home_score} - {fixture.away_score}
+                            </span>
+                          )}
+                        </ResultTableCell>
+                        <TeamTableCell align="center">
+                          <img
+                            src={fixture.team2_logo}
+                            style={{
+                              margin: "5px",
+                              maxWidth: "30px",
+                              verticalAlign: "middle",
+                            }}
+                            alt="Team Logo"
+                          />
+                          {fixture.team2}
+                        </TeamTableCell>
+                        {/* <TableCell
+                          align="center"
+                          style={{ width: "55%", verticalAlign: "middle", textAlign: "centre" }}
                         >
-                          {fixture.time}
-                        </span>
-                      ) : (
-                        <span
-                          style={{
-                            margin: "10px",
-                            padding: "10px",
-                            borderRadius: "4px",
-                            border: `1px solid ${colors.primary[300]}`,
-                            backgroundColor: colors.primary[400],
-                            width: "100%",
-                          }}
-                        >
-                          {fixture.home_score} - {fixture.away_score}
-                        </span>
-                      )}
-                    </TableCell>
-                    <StyledTableCell align="center">
-                      {fixture.team2}
-                    </StyledTableCell>
-                    <TableCell align="center" style={{ width: "70%" }}>
-                      {fixture.stadium}
-                    </TableCell>
-                  </HoverTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-      ))}
+                          <StadiumOutlinedIcon
+                            sx={{
+                              verticalAlign: "middle",
+                              marginRight: "10px",
+                            }}
+                          />
+                          {fixture.stadium}
+                        </TableCell> */}
+                      </HoverTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          ))}
+        </Box>
+      </Box>
     </Box>
-  </Box>
-</Box>
   );
 };
 

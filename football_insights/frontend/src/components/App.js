@@ -8,12 +8,15 @@ import Topbar from "../scenes/global/Topbar.jsx";
 import Sidebar from "../scenes/global/Sidebar.jsx";
 import Dashboard from "../scenes/dashboard/index.jsx";
 import LiveScores from '../scenes/livescores/index.jsx';
+import LiveStats from '../scenes/livescores/stats.jsx';
 import Fixtures from '../scenes/fixtures/index.jsx';
+import FixtureDetails from '../scenes/fixtures/details.jsx';
 import ScorePrediction from "../scenes/scoreprediction/index.jsx";
 import LeagueTable from '../scenes/leaguetable/index.jsx';
-import TeamStats from '../scenes/teams/index.jsx';
-import TeamDetails from "../scenes/teams/stats.jsx";
-import PlayerStats from '../scenes/players/index.jsx';
+import Teams from '../scenes/teams/index.jsx';
+import TeamStats from "../scenes/teams/stats.jsx";
+import Players from '../scenes/players/index.jsx';
+import PlayerStats from "../scenes/players/stats.jsx";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -29,12 +32,15 @@ function App() {
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/livescores" element={<LiveScores />} />
+                <Route path="/livescores/:id" element={<LiveStats />} />
                 <Route path="/fixtures" element={<Fixtures />} />
+                <Route path="/fixtures/:id" element={<FixtureDetails />} />
                 <Route path="/predictions" element={<ScorePrediction />} />
                 <Route path="/leaguetable" element={<LeagueTable />} />
-                <Route path="/teams/" element={<TeamStats />} />
-                <Route path="/teams/:id" element={<TeamDetails />} />
-                <Route path="/players" element={<PlayerStats /> }/>
+                <Route path="/teams/" element={<Teams />} />
+                <Route path="/teams/:id" element={<TeamStats />} />
+                <Route path="/players" element={<Players /> }/>
+                <Route path="/players/:id" element={<PlayerStats />} />
               </Routes>
           </main>
         </div>
