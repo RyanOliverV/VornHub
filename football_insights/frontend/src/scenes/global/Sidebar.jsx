@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -189,13 +189,43 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+            <SubMenu
               title="Players"
-              to="/players"
               icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            >
+              <Item
+                title="Goalkeepers"
+                to="/players/goalkeepers"
+                selected={selected}
+                setSelected={setSelected}
+              >
+                Goalkeepers
+              </Item>
+              <Item
+                title="Defenders"
+                to="/players/defenders"
+                selected={selected}
+                setSelected={setSelected}
+              >
+                Defenders
+              </Item>
+              <Item
+                title="Midfielders"
+                to="/players/midfielders"
+                selected={selected}
+                setSelected={setSelected}
+              >
+                Midfielders
+              </Item>
+              <Item
+                title="Forwards"
+                to="/players/forwards"
+                selected={selected}
+                setSelected={setSelected}
+              >
+                Forwards
+              </Item>
+            </SubMenu>
           </Box>
         </Menu>
       </ProSidebar>

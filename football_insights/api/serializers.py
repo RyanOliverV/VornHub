@@ -30,11 +30,21 @@ class TeamDetailSerializer(serializers.Serializer):
 
 class PlayerSerializer(serializers.Serializer):
     id = serializers.IntegerField(source='player.id', default=None)
-    name = serializers.CharField(
-        source='player.name', max_length=100, default=None)
-    image = serializers.CharField(
-        source='player.image_path', max_length=100, default=None)
+    name = serializers.CharField(source='player.name', max_length=100, default=None)
+    rating = serializers.SerializerMethodField()
 
+    def get_rating(self, instance):
+        details = instance.get('details', [])
+        for detail in details:
+            if detail['type']['code'] == 'rating':
+                return detail['value']['average']
+        return None
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if data.get('rating') is None:
+            return None
+        return data
 
 class LeagueTableSerializer(serializers.Serializer):
     id = serializers.IntegerField(source='participant_id', default=None)

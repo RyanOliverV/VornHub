@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import {
   Box,
   Paper,
@@ -30,6 +30,7 @@ const LeagueTable = () => {
     key: "position",
     direction: "asc",
   });
+  
   const [selectedSeason, setSelectedSeason] = useState("21207"); // Holds the selected season ID
 
   // Fetch data when the selected season changes

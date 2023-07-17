@@ -11,6 +11,9 @@ urlpatterns = [
     path('leaguetable', index),
     path('teams', index),
     path('teams/<int:id>', index),
-    path('players', index),
+    path('players/goalkeepers', index),
+    path('players/defenders', index),
+    path('players/midfielders', index),
+    path('players/forwards', index),
     path('players/<int:id>', index),
 ]

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import TeamSerializer, TeamDetailSerializer, LeagueTableSerializer, FixturesSerializer, PlayerSerializer
 import datetime
+from rest_framework.pagination import PageNumberPagination
 
 # SoccerMonks API Token: LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu
 
@@ -11,7 +12,7 @@ import datetime
 class SeasonList(APIView):
     def get(self, request):
         # Retrieve the seasons for a particular league
-        url = "https://api.sportmonks.com/v3/football/seasons/teams/303/?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&page=2"
+        url = "https://api.sportmonks.com/v3/football/seasons/teams/6/?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&page=2"
         # Send a GET request to the specified URL
         response = requests.get(url)
         # Parse the response as JSON
@@ -66,57 +67,138 @@ class TeamDetail(APIView):
         return Response(serializer.data)
 
 
+def get_all_players():
+    url = "https://api.sportmonks.com/v3/football/teams/seasons/21207?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu"
+    response = requests.get(url)
+    data = response.json()
+    teams = data["data"]
+
+    all_players = []
+
+    for team in teams:
+        team_id = team["id"]
+        squad_url = f"https://api.sportmonks.com/v3/football/squads/seasons/21207/teams/{team_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=player;details.type"
+        squad_response = requests.get(squad_url)
+        squad_data = squad_response.json()
+        squad = squad_data["data"]
+
+        # Append the players from the team's squad to the aggregated list
+        all_players.extend(squad)
+    return all_players
+
+
+def get_players_by_position(all_players, position_id):
+    players_by_position = [
+        player for player in all_players if player["player"]["detailed_position_id"] in position_id]
+    return players_by_position
+
+
+class CustomPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'per_page'
+    max_page_size = 100
+
+
 class PlayerList(APIView):
+    pagination_class = CustomPagination
+
     def get(self, request):
-        url = "https://api.sportmonks.com/v3/football/teams/seasons/21207?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu"
-        response = requests.get(url)
-        data = response.json()
-        teams = data["data"]
+        all_players = get_all_players()
+        paginator = self.pagination_class()
+        paginated_players = paginator.paginate_queryset(all_players, request)
 
-        all_players = []
+        serializer = PlayerSerializer(paginated_players, many=True)
+        serialized_players = [
+            player for player in serializer.data if player is not None]
+        return paginator.get_paginated_response(serialized_players)
 
-        for team in teams:
-            team_id = team["id"]
-            squad_url = f"https://api.sportmonks.com/v3/football/squads/seasons/21207/teams/{team_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&includes=player;team"
-            squad_response = requests.get(squad_url)
-            squad_data = squad_response.json()
-            squad = squad_data["data"]
 
-            # Append the players from the team's squad to the aggregated list
-            all_players.extend(squad)
+class GoalkeeperList(APIView):
+    def get(self, request):
+        position_id = [24]
+        all_players = get_all_players()
+        players = get_players_by_position(all_players, position_id)
+        serializer = PlayerSerializer(players, many=True)
+        serialized_players = [
+            player for player in serializer.data if player is not None]
+        return Response(serialized_players)
 
-        serializer = PlayerSerializer(all_players, many=True)
 
-        return Response(serializer.data)
+class CentreBackList(APIView):
+    def get(self, request):
+        position_id = [148]
+        all_players = get_all_players()
+        players = get_players_by_position(all_players, position_id)
+        serializer = PlayerSerializer(players, many=True)
+        serialized_players = [
+            player for player in serializer.data if player is not None]
+        return Response(serialized_players)
 
-# Pagination for the PlayerList
-    # pagination_class = CustomPagination
 
-    # def get(self, request):
-    #     url = "https://api.sportmonks.com/v3/football/teams/seasons/21207?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu"
-    #     response = requests.get(url)
-    #     data = response.json()
-    #     teams = data["data"]
+class FullBackList(APIView):
+    def get(self, request):
+        position_id = [154, 155]
+        all_players = get_all_players()
+        players = get_players_by_position(all_players, position_id)
+        serializer = PlayerSerializer(players, many=True)
+        serialized_players = [
+            player for player in serializer.data if player is not None]
+        return Response(serialized_players)
 
-    #     all_players = []
 
-    #     for team in teams:
-    #         team_id = team["id"]
-    #         squad_url = f"https://api.sportmonks.com/v3/football/squads/seasons/21207/teams/{team_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&includes=player;team"
-    #         squad_response = requests.get(squad_url)
-    #         squad_data = squad_response.json()
-    #         squad = squad_data["data"]
+class DefensiveMidfielderList(APIView):
+    def get(self, request):
+        position_id = [149]
+        all_players = get_all_players()
+        players = get_players_by_position(all_players, position_id)
+        serializer = PlayerSerializer(players, many=True)
+        serialized_players = [
+            player for player in serializer.data if player is not None]
+        return Response(serialized_players)
 
-    #         # Append the players from the team's squad to the aggregated list
-    #         all_players.extend(squad)
 
-    #     # Sort the all_players list alphabetically by player name
-    #     all_players.sort(key=lambda player: player["player"]["name"])
+class CentralMidfielderList(APIView):
+    def get(self, request):
+        position_id = [153]
+        all_players = get_all_players()
+        players = get_players_by_position(all_players, position_id)
+        serializer = PlayerSerializer(players, many=True)
+        serialized_players = [
+            player for player in serializer.data if player is not None]
+        return Response(serialized_players)
 
-    #     # Apply pagination to the sorted all_players list
-    #     paginator = self.pagination_class()
-    #     page = paginator.paginate_queryset(all_players, request)
-    #     serializer = PlayerSerializer(page, many=True)
+
+class AttackingMidfielderList(APIView):
+    def get(self, request):
+        position_id = [150]
+        all_players = get_all_players()
+        players = get_players_by_position(all_players, position_id)
+        serializer = PlayerSerializer(players, many=True)
+        serialized_players = [
+            player for player in serializer.data if player is not None]
+        return Response(serialized_players)
+
+
+class WingerList(APIView):
+    def get(self, request):
+        position_id = [152, 156]
+        all_players = get_all_players()
+        players = get_players_by_position(all_players, position_id)
+        serializer = PlayerSerializer(players, many=True)
+        serialized_players = [
+            player for player in serializer.data if player is not None]
+        return Response(serialized_players)
+
+
+class CentreForwardList(APIView):
+    def get(self, request):
+        position_id = [151]
+        all_players = get_all_players()
+        players = get_players_by_position(all_players, position_id)
+        serializer = PlayerSerializer(players, many=True)
+        serialized_players = [
+            player for player in serializer.data if player is not None]
+        return Response(serialized_players)
 
 
 class FixtureList(APIView):

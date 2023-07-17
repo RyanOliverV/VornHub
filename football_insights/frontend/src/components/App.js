@@ -17,6 +17,10 @@ import Teams from '../scenes/teams/index.jsx';
 import TeamStats from "../scenes/teams/stats.jsx";
 import Players from '../scenes/players/index.jsx';
 import PlayerStats from "../scenes/players/stats.jsx";
+import Goalkeepers from "../scenes/players/goalkeeper.jsx";
+import Defenders from "../scenes/players/defender.jsx";
+import Midfielders from "../scenes/players/midfielder.jsx";
+import Forwards from "../scenes/players/forward.jsx";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -39,8 +43,11 @@ function App() {
                 <Route path="/leaguetable" element={<LeagueTable />} />
                 <Route path="/teams/" element={<Teams />} />
                 <Route path="/teams/:id" element={<TeamStats />} />
-                <Route path="/players" element={<Players /> }/>
                 <Route path="/players/:id" element={<PlayerStats />} />
+                <Route path="/players/goalkeepers" element={<Goalkeepers /> }/>
+                <Route path="/players/defenders" element={<Defenders /> }/>
+                <Route path="/players/midfielders" element={<Midfielders /> }/>
+                <Route path="/players/forwards" element={<Forwards /> }/>
               </Routes>
           </main>
         </div>
