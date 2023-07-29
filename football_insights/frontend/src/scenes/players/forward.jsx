@@ -19,7 +19,6 @@ import { Link } from "react-router-dom";
 import { tokens } from "../../theme";
 import Header from "../../components/Header.jsx";
 
-
 const Forwards = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -43,19 +42,19 @@ const Forwards = () => {
 
   const fetchCentreForwardPlayers = async () => {
     setLoading(true);
-  
+
     const response = await fetch("/api/centreforwards/");
     const data = await response.json();
-  
+
     const sortedPlayers = data.sort((a, b) => b.rating - a.rating);
-  
+
     setcentreforwardsTotalCount(sortedPlayers.length);
-  
+
     const newStartIndex = (centreforwardsCurrentPage - 1) * playersPerPage;
     const newEndIndex = newStartIndex + playersPerPage;
-  
+
     const displayedPlayers = sortedPlayers.slice(newStartIndex, newEndIndex);
-  
+
     const rankedPlayers = displayedPlayers.map((player, index) => {
       let rank = newStartIndex + index + 1;
       if (sortConfig.direction === "desc") {
@@ -66,28 +65,28 @@ const Forwards = () => {
         rank: rank,
       };
     });
-  
+
     setcentreforwards(rankedPlayers);
     setcentreforwardsStartIndex(newStartIndex);
     setcentreforwardsEndIndex(newEndIndex);
     setLoading(false);
   };
-  
+
   const fetchWingerPlayers = async () => {
     setLoading(true);
-  
+
     const response = await fetch("/api/wingers/");
     const data = await response.json();
-  
+
     const sortedPlayers = data.sort((a, b) => b.rating - a.rating);
-  
+
     setwingersTotalCount(sortedPlayers.length);
-  
+
     const newStartIndex = (wingersCurrentPage - 1) * playersPerPage;
     const newEndIndex = newStartIndex + playersPerPage;
-  
+
     const displayedPlayers = sortedPlayers.slice(newStartIndex, newEndIndex);
-  
+
     const rankedPlayers = displayedPlayers.map((player, index) => {
       let rank = newStartIndex + index + 1;
       if (sortConfig.direction === "desc") {
@@ -98,7 +97,7 @@ const Forwards = () => {
         rank: rank,
       };
     });
-  
+
     setwingers(rankedPlayers);
     setwingersStartIndex(newStartIndex);
     setwingersEndIndex(newEndIndex);
@@ -174,9 +173,15 @@ const Forwards = () => {
   }, [wingers, sortConfig]);
 
   return (
-    <Box m="20px 70px" height="80vh" display="flex" flexDirection="column" style={{overflow: "auto"}}>
+    <Box
+      m="20px 70px"
+      height="80vh"
+      display="flex"
+      flexDirection="column"
+      style={{ overflow: "auto" }}
+    >
       <Box flexGrow={1}>
-      <Header title="Forwards" subtitle="Centre Forwards" />
+        <Header title="Forwards" subtitle="Centre Forwards" />
         {centreforwards.length > 0 ? (
           <Box style={{ maxHeight: "50vh", overflow: "auto" }}>
             <TableContainer component={Paper}>
@@ -216,7 +221,8 @@ const Forwards = () => {
                   {sortedcentreforwards.map((player, index) => (
                     <HoverTableRow
                       key={player.id}
-                      component="tr"
+                      component={Link}
+                      to={`/players/${player.id}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <TableCell>{player.rank}</TableCell>
@@ -263,7 +269,7 @@ const Forwards = () => {
         ) : null}
       </Box>
       <Box flexGrow={1}>
-      <Header subtitle="Wingers" />
+        <Header subtitle="Wingers" />
         {wingers.length > 0 ? (
           <Box style={{ maxHeight: "50vh", overflow: "auto" }}>
             <TableContainer component={Paper}>
@@ -303,7 +309,8 @@ const Forwards = () => {
                   {sortedwingers.map((player, index) => (
                     <HoverTableRow
                       key={player.id}
-                      component="tr"
+                      component={Link}
+                      to={`/players/${player.id}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <TableCell>{player.rank}</TableCell>
@@ -335,8 +342,7 @@ const Forwards = () => {
                   Previous
                 </Button>
               )}
-              {wingersTotalCount >
-                wingersCurrentPage * playersPerPage && (
+              {wingersTotalCount > wingersCurrentPage * playersPerPage && (
                 <Button
                   variant="contained"
                   style={{ background: colors.primary[400] }}

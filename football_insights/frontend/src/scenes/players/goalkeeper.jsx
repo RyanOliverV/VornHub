@@ -15,6 +15,7 @@ import {
 import { styled } from "@mui/system";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Link } from "react-router-dom";
+import Header from "../../components/Header.jsx";
 import { tokens } from "../../theme";
 
 const Goalkeepers = () => {
@@ -127,6 +128,7 @@ const Goalkeepers = () => {
 
   return (
     <Box m="20px 70px">
+      <Header title="Goalkeepers" />
       {players.length > 0 ? (
         <Box style={{ height: "80vh", overflow: "auto" }}>
           <TableContainer component={Paper}>
@@ -166,7 +168,8 @@ const Goalkeepers = () => {
                 {sortedPlayers.map((player, index) => (
                   <HoverTableRow
                     key={player.id}
-                    component="tr"
+                    component={Link}
+                    to={`/players/${player.id}`}
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
                     <TableCell>{player.rank}</TableCell>

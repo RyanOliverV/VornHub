@@ -28,9 +28,10 @@ class TeamDetailSerializer(serializers.Serializer):
     capacity = serializers.IntegerField(source='venue.capacity', default=None)
 
 
-class PlayerSerializer(serializers.Serializer):
+class PlayerListSerializer(serializers.Serializer):
     id = serializers.IntegerField(source='player.id', default=None)
-    name = serializers.CharField(source='player.name', max_length=100, default=None)
+    name = serializers.CharField(
+        source='player.name', max_length=100, default=None)
     rating = serializers.SerializerMethodField()
 
     def get_rating(self, instance):
@@ -45,6 +46,343 @@ class PlayerSerializer(serializers.Serializer):
         if data.get('rating') is None:
             return None
         return data
+
+
+class PlayerDetailsSerializer(serializers.Serializer):
+    id = serializers.IntegerField(default=None)
+    name = serializers.CharField(max_length=100, default=None)
+    age = serializers.SerializerMethodField()
+    team = serializers.CharField(
+        source='team.name', max_length=100, default=None)
+    position = serializers.CharField(
+        source='detailedposition.name', max_length=100, default=None)
+    appearances = serializers.SerializerMethodField()
+    minutes = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
+    goals = serializers.SerializerMethodField()
+    assists = serializers.SerializerMethodField()
+    offsides = serializers.SerializerMethodField()
+    totalShots = serializers.SerializerMethodField()
+    shotsOnTarget = serializers.SerializerMethodField()
+    shotsBlocked = serializers.SerializerMethodField()
+    bigChancesMissed = serializers.SerializerMethodField()
+    passes = serializers.SerializerMethodField()
+    accuratePasses = serializers.SerializerMethodField()
+    accuratePassesPercentage = serializers.SerializerMethodField()
+    keyPasses = serializers.SerializerMethodField()
+    bigChancesCreated = serializers.SerializerMethodField()
+    totalCrosses = serializers.SerializerMethodField()
+    accurateCrosses = serializers.SerializerMethodField()
+    longBalls = serializers.SerializerMethodField()
+    longBallsWon = serializers.SerializerMethodField()
+    throughBalls = serializers.SerializerMethodField()
+    throughBallsWon = serializers.SerializerMethodField()
+    dribbleAttempts = serializers.SerializerMethodField()
+    dribbledPast = serializers.SerializerMethodField()
+    dispossessed = serializers.SerializerMethodField()
+    foulsDrawn = serializers.SerializerMethodField()
+    totalDuels = serializers.SerializerMethodField()
+    duelsWon = serializers.SerializerMethodField()
+    aerialsWon = serializers.SerializerMethodField()
+    tackles = serializers.SerializerMethodField()
+    interceptions = serializers.SerializerMethodField()
+    blockedShots = serializers.SerializerMethodField()
+    clearances = serializers.SerializerMethodField()
+    goalsConceded = serializers.SerializerMethodField()
+    fouls = serializers.SerializerMethodField()
+    saves = serializers.SerializerMethodField()
+    savesInsideBox = serializers.SerializerMethodField()
+    errorsToGoal = serializers.SerializerMethodField()
+    yellows = serializers.SerializerMethodField()
+    reds = serializers.SerializerMethodField()
+
+    def get_age(self, obj):
+        if obj['date_of_birth']:
+            birth_date = datetime.strptime(obj['date_of_birth'], '%Y-%m-%d')
+            today = datetime.now()
+            age = today.year - birth_date.year - \
+                ((today.month, today.day) < (birth_date.month, birth_date.day))
+            return age
+        return None
+
+    def get_appearances(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'appearances':
+                    return detail['value']['total']
+
+    def get_minutes(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'minutes-played':
+                    return detail['value']['total']
+
+    def get_rating(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'rating':
+                    return detail['value']['average']
+
+    def get_offsides(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'offsides':
+                    return detail['value']['total']
+
+    def get_totalShots(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'shots-total':
+                    return detail['value']['total']
+        return None
+
+    def get_shotsOnTarget(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'shots-on-target':
+                    return detail['value']['total']
+
+    def get_shotsBlocked(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'shots-blocked':
+                    return detail['value']['total']
+
+    def get_bigChancesMissed(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'big-chances-missed':
+                    return detail['value']['total']
+
+    def get_goals(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'goals':
+                    return detail['value']['total']
+        return None
+
+    def get_assists(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'assists':
+                    return detail['value']['total']
+        return None
+
+    def get_passes(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'passes':
+                    return detail['value']['total']
+
+    def get_accuratePasses(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'accurate-passes':
+                    return detail['value']['total']
+
+    def get_accuratePassesPercentage(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'accurate-passes-percentage':
+                    return detail['value']['total']
+
+    def get_keyPasses(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'key-passes':
+                    return detail['value']['total']
+
+    def get_bigChancesCreated(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'big-chances-created':
+                    return detail['value']['total']
+
+    def get_totalCrosses(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'total-crosses':
+                    return detail['value']['total']
+
+    def get_accurateCrosses(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'accurate-crosses':
+                    return detail['value']['total']
+
+    def get_longBalls(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'long-balls':
+                    return detail['value']['total']
+
+    def get_longBallsWon(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'long-balls-won':
+                    return detail['value']['total']
+
+    def get_throughBalls(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'through-balls':
+                    return detail['value']['total']
+
+    def get_throughBallsWon(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'through-balls-won':
+                    return detail['value']['total']
+
+    def get_dribbleAttempts(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'dribble-attempts':
+                    return detail['value']['total']
+
+    def get_dribbledPast(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'dribbled-past':
+                    return detail['value']['total']
+
+    def get_dispossessed(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'dispossessed':
+                    return detail['value']['total']
+
+    def get_foulsDrawn(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'fouls-drawn':
+                    return detail['value']['total']
+
+    def get_totalDuels(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'total-duels':
+                    return detail['value']['total']
+
+    def get_duelsWon(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'duels-won':
+                    return detail['value']['total']
+
+    def get_aerialsWon(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'aeriels-won':
+                    return detail['value']['total']
+
+    def get_goalsConceded(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'goals-conceded':
+                    return detail['value']['total']
+
+    def get_tackles(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'tackles':
+                    return detail['value']['total']
+
+    def get_interceptions(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'interceptions':
+                    return detail['value']['total']
+
+    def get_blockedShots(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'blocked-shots':
+                    return detail['value']['total']
+
+    def get_clearances(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'clearances':
+                    return detail['value']['total']
+
+    def get_fouls(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'fouls':
+                    return detail['value']['total']
+
+    def get_saves(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'saves':
+                    return detail['value']['total']
+
+    def get_savesInsideBox(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'saves-insidebox':
+                    return detail['value']['total']
+
+    def get_errorsToGoal(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'error-lead-to-goal':
+                    return detail['value']['total']
+                
+    def get_yellows(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'yellowcards':
+                    return detail['value']['total']
+        return None
+
+    def get_reds(self, instance):
+        statistics = instance.get('statistics', [])
+        for stats in statistics:
+            for detail in stats.get('details', []):
+                if detail['type']['code'] == 'yellowred-cards':
+                    return detail['value']['total']
+        return None
+
 
 class LeagueTableSerializer(serializers.Serializer):
     id = serializers.IntegerField(source='participant_id', default=None)
@@ -237,4 +575,228 @@ class FixturesSerializer(serializers.Serializer):
         participants = obj.get("participants", [])
         if len(participants) > 1:
             return self.get_team_logo(participants[1])
+        return None
+    
+class TeamInfoSerializer(serializers.Serializer):
+    team1 = serializers.SerializerMethodField()
+    team2 = serializers.SerializerMethodField()
+    team1_country = serializers.SerializerMethodField()
+    team2_country = serializers.SerializerMethodField()
+    team1_logo = serializers.SerializerMethodField()
+    team2_logo = serializers.SerializerMethodField()
+    
+class TeamsComparisonSerializer (serializers.Serializer):
+    team1 = serializers.SerializerMethodField()
+    team2 = serializers.SerializerMethodField()
+    team1_country = serializers.SerializerMethodField()
+    team2_country = serializers.SerializerMethodField()
+    team1_logo = serializers.SerializerMethodField()
+    team2_logo = serializers.SerializerMethodField()
+    team1_goals = serializers.SerializerMethodField()
+    team2_goals = serializers.SerializerMethodField()
+    result_info = serializers.CharField(default=None)
+    team1_clean_sheets = serializers.SerializerMethodField()
+    team2_clean_sheets = serializers.SerializerMethodField()
+    home_team = serializers.SerializerMethodField()
+    away_team = serializers.SerializerMethodField()
+    home_score = serializers.SerializerMethodField()
+    away_score = serializers.SerializerMethodField()
+    date = serializers.SerializerMethodField()
+
+    def get_team_name_by_id(self, fixture, participant_id):
+        for participant in fixture.get("participants", []):
+            if participant.get("id") == participant_id:
+                return participant.get("name")
+        return None
+
+    def get_team1(self, obj):
+        team1_id = int(self.context.get("team1_id"))
+        return self.get_team_name_by_id(obj, team1_id)
+
+    def get_team2(self, obj):
+        team2_id = int(self.context.get("team2_id"))
+        return self.get_team_name_by_id(obj, team2_id)
+
+    def get_team_country_by_id(self, fixture, participant_id):
+        for participant in fixture.get("participants", []):
+            if participant.get("id") == participant_id:
+                if participant.get("country_id") == 5:
+                    return "Brazil"
+                elif participant.get("country_id") == 462:
+                    return "England"
+        return None
+    
+    def get_team1_country(self, obj):
+        team1_id = int(self.context.get("team1_id"))
+        return self.get_team_country_by_id(obj, team1_id)
+    
+    def get_team2_country(self, obj):
+        team2_id = int(self.context.get("team2_id"))
+        return self.get_team_country_by_id(obj, team2_id)
+    
+    def get_team_logo_by_id(self, fixture, participant_id):
+        for participant in fixture.get("participants", []):
+            if participant.get("id") == participant_id:
+                return participant.get("image_path")
+        return None
+
+    def get_team1_logo(self, obj):
+        team1_id = int(self.context.get("team1_id"))
+        return self.get_team_logo_by_id(obj, team1_id)
+
+    def get_team2_logo(self, obj):
+        team2_id = int(self.context.get("team2_id"))
+        return self.get_team_logo_by_id(obj, team2_id)
+
+    def get_team1_goals(self, fixture):
+        team1_id = int(self.context.get("team1_id"))
+        goals = 0
+        for score in fixture.get("scores", []):
+            if score.get("participant_id") == team1_id and score.get("description") == "CURRENT":
+                goals += int(score.get("score", {}).get("goals", 0))
+        return goals
+
+    def get_team2_goals(self, fixture):
+        team2_id = int(self.context.get("team2_id"))
+        goals = 0
+        for score in fixture.get("scores", []):
+            if score.get("participant_id") == team2_id and score.get("description") == "CURRENT":
+                goals += int(score.get("score", {}).get("goals", 0))
+        return goals
+    
+    def get_team1_clean_sheets(self, fixture):
+        team1_id = int(self.context.get("team1_id"))
+        clean_sheets = 0
+
+        # Check if the team1_id exists in the participants list
+        team1_participant = next((participant for participant in fixture.get("participants", []) if participant.get("id") == team1_id), None)
+
+        # Check if the team1 has no goals in the scores list
+        team1_has_goals = any(score.get("score", {}).get("goals", 0) > 0 for score in fixture.get("scores", []) if score.get("participant_id") == team1_id)
+
+        if team1_participant and not team1_has_goals:
+            clean_sheets = 1
+
+        return clean_sheets
+
+    def get_team2_clean_sheets(self, fixture):
+        team2_id = int(self.context.get("team2_id"))
+        clean_sheets = 0
+
+        # Check if the team2_id exists in the participants list
+        team2_participant = next((participant for participant in fixture.get("participants", []) if participant.get("id") == team2_id), None)
+
+        # Check if the team2 has no goals in the scores list
+        team2_has_goals = any(score.get("score", {}).get("goals", 0) > 0 for score in fixture.get("scores", []) if score.get("participant_id") == team2_id)
+
+        if team2_participant and not team2_has_goals:
+            clean_sheets = 1
+
+        return clean_sheets
+
+    def get_home_team(self, obj):
+        team_names = obj.get("name")
+        if team_names:
+            team_list = team_names.split(" vs ")
+            return team_list[0]
+        return None
+
+    def get_away_team(self, obj):
+        team_names = obj.get("name")
+        if team_names:
+            team_list = team_names.split(" vs ")
+            return team_list[1]
+        return None
+
+    def get_home_score(self, obj):
+        scores = obj.get("scores", [])
+        for score in scores:
+            if score.get("description") == "CURRENT" and score.get("score", {}).get("participant") == "home":
+                return score.get("score", {}).get("goals")
+        return None
+
+    def get_away_score(self, obj):
+        scores = obj.get("scores", [])
+        for score in scores:
+            if score.get("description") == "CURRENT" and score.get("score", {}).get("participant") == "away":
+                return score.get("score", {}).get("goals")
+        return None
+
+    def get_date(self, obj):
+        starting_at = obj.get("starting_at")
+        if starting_at:
+            date_str, time_str = starting_at.split(" ")
+            datetime_obj = datetime.strptime(date_str, "%Y-%m-%d")
+            uk_date_str = datetime_obj.strftime("%d/%m/%Y")
+            return uk_date_str
+        return None
+
+class LatestFixturesSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    home_team = serializers.SerializerMethodField()
+    away_team = serializers.SerializerMethodField()
+    home_team_logo = serializers.SerializerMethodField()
+    away_team_logo = serializers.SerializerMethodField()
+    home_score = serializers.SerializerMethodField()
+    away_score = serializers.SerializerMethodField()
+    date = serializers.SerializerMethodField()
+
+    def get_home_team(self, obj):
+        team_names = obj.get("name")
+        if team_names:
+            team_list = team_names.split(" vs ")
+            return team_list[0]
+        return None
+
+    def get_away_team(self, obj):
+        team_names = obj.get("name")
+        if team_names:
+            team_list = team_names.split(" vs ")
+            return team_list[1]
+        return None
+
+    def get_team_logo(self, participant):
+        meta = participant.get("meta", {})
+        location = meta.get("location")
+        if location == "home":
+            return participant.get("image_path")
+        elif location == "away":
+            return participant.get("image_path")
+        return None
+
+    def get_home_team_logo(self, obj):
+        participants = obj.get("participants", [])
+        for participant in participants:
+            if participant.get("meta", {}).get("location") == "home":
+                return self.get_team_logo(participant)
+        return None
+
+    def get_away_team_logo(self, obj):
+        participants = obj.get("participants", [])
+        for participant in participants:
+            if participant.get("meta", {}).get("location") == "away":
+                return self.get_team_logo(participant)
+        return None
+    
+    def get_home_score(self, obj):
+        scores = obj.get("scores", [])
+        for score in scores:
+            if score.get("description") == "CURRENT" and score.get("score", {}).get("participant") == "home":
+                return score.get("score", {}).get("goals")
+        return None
+
+    def get_away_score(self, obj):
+        scores = obj.get("scores", [])
+        for score in scores:
+            if score.get("description") == "CURRENT" and score.get("score", {}).get("participant") == "away":
+                return score.get("score", {}).get("goals")
+        return None
+
+    def get_date(self, obj):
+        starting_at = obj.get("starting_at")
+        if starting_at:
+            date_str, time_str = starting_at.split(" ")
+            datetime_obj = datetime.strptime(date_str, "%Y-%m-%d")
+            uk_date_str = datetime_obj.strftime("%d/%m/%Y")
+            return uk_date_str
         return None

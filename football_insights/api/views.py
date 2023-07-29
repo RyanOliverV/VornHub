@@ -2,7 +2,7 @@ import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import TeamSerializer, TeamDetailSerializer, LeagueTableSerializer, FixturesSerializer, PlayerSerializer
+from .serializers import TeamSerializer, TeamDetailSerializer, LeagueTableSerializer, FixturesSerializer, PlayerListSerializer, PlayerDetailsSerializer, TeamsComparisonSerializer, LatestFixturesSerializer
 import datetime
 from rest_framework.pagination import PageNumberPagination
 
@@ -107,7 +107,7 @@ class PlayerList(APIView):
         paginator = self.pagination_class()
         paginated_players = paginator.paginate_queryset(all_players, request)
 
-        serializer = PlayerSerializer(paginated_players, many=True)
+        serializer = PlayerListSerializer(paginated_players, many=True)
         serialized_players = [
             player for player in serializer.data if player is not None]
         return paginator.get_paginated_response(serialized_players)
@@ -118,7 +118,7 @@ class GoalkeeperList(APIView):
         position_id = [24]
         all_players = get_all_players()
         players = get_players_by_position(all_players, position_id)
-        serializer = PlayerSerializer(players, many=True)
+        serializer = PlayerListSerializer(players, many=True)
         serialized_players = [
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
@@ -129,7 +129,7 @@ class CentreBackList(APIView):
         position_id = [148]
         all_players = get_all_players()
         players = get_players_by_position(all_players, position_id)
-        serializer = PlayerSerializer(players, many=True)
+        serializer = PlayerListSerializer(players, many=True)
         serialized_players = [
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
@@ -140,7 +140,7 @@ class FullBackList(APIView):
         position_id = [154, 155]
         all_players = get_all_players()
         players = get_players_by_position(all_players, position_id)
-        serializer = PlayerSerializer(players, many=True)
+        serializer = PlayerListSerializer(players, many=True)
         serialized_players = [
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
@@ -151,7 +151,7 @@ class DefensiveMidfielderList(APIView):
         position_id = [149]
         all_players = get_all_players()
         players = get_players_by_position(all_players, position_id)
-        serializer = PlayerSerializer(players, many=True)
+        serializer = PlayerListSerializer(players, many=True)
         serialized_players = [
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
@@ -162,7 +162,7 @@ class CentralMidfielderList(APIView):
         position_id = [153]
         all_players = get_all_players()
         players = get_players_by_position(all_players, position_id)
-        serializer = PlayerSerializer(players, many=True)
+        serializer = PlayerListSerializer(players, many=True)
         serialized_players = [
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
@@ -173,7 +173,7 @@ class AttackingMidfielderList(APIView):
         position_id = [150]
         all_players = get_all_players()
         players = get_players_by_position(all_players, position_id)
-        serializer = PlayerSerializer(players, many=True)
+        serializer = PlayerListSerializer(players, many=True)
         serialized_players = [
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
@@ -184,7 +184,7 @@ class WingerList(APIView):
         position_id = [152, 156]
         all_players = get_all_players()
         players = get_players_by_position(all_players, position_id)
-        serializer = PlayerSerializer(players, many=True)
+        serializer = PlayerListSerializer(players, many=True)
         serialized_players = [
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
@@ -195,7 +195,7 @@ class CentreForwardList(APIView):
         position_id = [151]
         all_players = get_all_players()
         players = get_players_by_position(all_players, position_id)
-        serializer = PlayerSerializer(players, many=True)
+        serializer = PlayerListSerializer(players, many=True)
         serialized_players = [
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
@@ -214,6 +214,133 @@ class FixtureList(APIView):
         fixtures = sorted(fixtures, key=lambda x: x.get("starting_at"))
 
         serializer = FixturesSerializer(fixtures, many=True)
+
+        return Response(serializer.data)
+
+
+class FixtureDetail(APIView):
+    def get(self, request, id):
+        url = f"https://api.sportmonks.com/v3/football/fixtures/{id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=participants"
+        response = requests.get(url)
+        data = response.json()
+        fixture = data["data"]
+
+        # serializer = FixturesSerializer(fixtures, many=True)
+
+        return Response(fixture)
+
+
+class TeamsComparison(APIView):
+    def get(self, request, team1_id, team2_id):
+        url = f"https://api.sportmonks.com/v3/football/fixtures/head-to-head/{team1_id}/{team2_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=scores;participants;statistics.type"
+        response = requests.get(url)
+        data = response.json()
+        fixtures = data["data"]
+
+        filtered_fixtures = [fixture for fixture in fixtures if isinstance(
+            fixture.get("statistics"), list) and len(fixture["statistics"]) > 0]
+
+        # Pass team1_id and team2_id as additional arguments to the serializer
+        serializer = TeamsComparisonSerializer(
+            fixtures,
+            many=True,
+            context={"team1_id": team1_id, "team2_id": team2_id},
+        )
+
+        # Get the serialized data
+        serialized_data = serializer.data
+
+        team1_value = serialized_data[0]["team1"]
+        team2_value = serialized_data[0]["team2"]
+        team1_country = serialized_data[0]["team1_country"]
+        team2_country = serialized_data[0]["team2_country"]
+        team1_logo = serialized_data[0]["team1_logo"]
+        team2_logo = serialized_data[0]["team2_logo"]
+        # Loop through the serialized data to calculate total goals for each team
+        team1_goals_total = 0
+        team2_goals_total = 0
+        team1_cleansheets = 0
+        team2_cleansheets = 0
+
+        # Initialize win, draw, and loss counters for each team
+        team1_wins = 0
+        team1_draws = 0
+        team1_losses = 0
+        team2_wins = 0
+        team2_draws = 0
+        team2_losses = 0
+
+        for fixture_data in serialized_data:
+            team1_goals_total += fixture_data["team1_goals"]
+            team2_goals_total += fixture_data["team2_goals"]
+            team1_cleansheets += fixture_data["team1_clean_sheets"]
+            team2_cleansheets += fixture_data["team2_clean_sheets"]
+
+            # Analyze the result_info to determine the outcome of the match
+            result_info = fixture_data["result_info"]
+            if "won" in result_info:
+                if fixture_data["team1_goals"] > fixture_data["team2_goals"]:
+                    team1_wins += 1
+                else:
+                    team2_wins += 1
+            elif "draw" in result_info:
+                team1_draws += 1
+                team2_draws += 1
+
+        # Count the number of fixtures
+        fixture_count = len(serialized_data)
+        team1_losses = team2_wins
+        team2_losses = team1_wins
+
+        # Create a dictionary with the total goals for each team
+        team_comparison = {
+            "team1": team1_value,
+            "team2": team2_value,
+            "team1_country": team1_country,
+            "team2_country": team2_country,
+            "team1_logo": team1_logo,
+            "team2_logo": team2_logo,
+            "matches_played": fixture_count,
+            "team1_wins": team1_wins,
+            "team1_draws": team1_draws,
+            "team1_losses": team1_losses,
+            "team2_wins": team2_wins,
+            "team2_draws": team2_draws,
+            "team2_losses": team2_losses,
+            "team1_goals_total": team1_goals_total,
+            "team2_goals_total": team2_goals_total,
+            "team1_cleansheets": team1_cleansheets,
+            "team2_cleansheets": team2_cleansheets,
+        }
+
+        return Response(team_comparison)
+
+class LatestFixtures(APIView):
+    def get(self, request, team1_id, team2_id):
+        url = f"https://api.sportmonks.com/v3/football/fixtures/head-to-head/{team1_id}/{team2_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=scores;participants;statistics.type"
+        response = requests.get(url)
+        data = response.json()
+        fixtures = data["data"]
+
+        filtered_fixtures = [fixture for fixture in fixtures if isinstance(
+            fixture.get("statistics"), list) and len(fixture["statistics"]) > 0]
+        
+         # Pass team1_id and team2_id as additional arguments to the serializer
+        serializer = LatestFixturesSerializer(
+            fixtures,
+            many=True,
+            context={"team1_id": team1_id, "team2_id": team2_id},
+        )
+        
+        return Response(serializer.data)
+
+class PlayerDetail(APIView):
+    def get(self, request, id):
+        url = f"https://api.sportmonks.com/v3/football/players/{id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=teams;metadata;detailedPosition;statistics.details.type&filters=playerStatisticSeasons:21207"
+        response = requests.get(url)
+        data = response.json()
+        player = data["data"]
+        serializer = PlayerDetailsSerializer(player)
 
         return Response(serializer.data)
 

@@ -297,7 +297,8 @@ const Midfielders = () => {
                   {sorteddefensiveMidfielder.map((player, index) => (
                     <HoverTableRow
                       key={player.id}
-                      component="tr"
+                      component={Link}
+                      to={`/players/${player.id}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <TableCell>{player.rank}</TableCell>
@@ -384,7 +385,8 @@ const Midfielders = () => {
                   {sortedcentralMidfielder.map((player, index) => (
                     <HoverTableRow
                       key={player.id}
-                      component="tr"
+                      component={Link}
+                      to={`/players/${player.id}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <TableCell>{player.rank}</TableCell>
@@ -463,7 +465,8 @@ const Midfielders = () => {
                   {sortedAttackingMidfielder.map((player, index) => (
                     <HoverTableRow
                       key={player.id}
-                      component="tr"
+                      component={Link}
+                      to={`/players/${player.id}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <TableCell>{player.rank}</TableCell>

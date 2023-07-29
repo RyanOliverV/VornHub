@@ -216,7 +216,8 @@ const Defenders = () => {
                   {sortedCenterbacks.map((player, index) => (
                     <HoverTableRow
                       key={player.id}
-                      component="tr"
+                      component={Link}
+                      to={`/players/${player.id}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <TableCell>{player.rank}</TableCell>
@@ -303,7 +304,8 @@ const Defenders = () => {
                   {sortedFullbacks.map((player, index) => (
                     <HoverTableRow
                       key={player.id}
-                      component="tr"
+                      component={Link}
+                      to={`/players/${player.id}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <TableCell>{player.rank}</TableCell>

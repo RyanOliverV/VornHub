@@ -14,9 +14,8 @@ import FixtureDetails from '../scenes/fixtures/details.jsx';
 import ScorePrediction from "../scenes/scoreprediction/index.jsx";
 import LeagueTable from '../scenes/leaguetable/index.jsx';
 import Teams from '../scenes/teams/index.jsx';
-import TeamStats from "../scenes/teams/stats.jsx";
-import Players from '../scenes/players/index.jsx';
-import PlayerStats from "../scenes/players/stats.jsx";
+import TeamDetails from "../scenes/teams/details.jsx";
+import PlayerDetails from "../scenes/players/details.jsx";
 import Goalkeepers from "../scenes/players/goalkeeper.jsx";
 import Defenders from "../scenes/players/defender.jsx";
 import Midfielders from "../scenes/players/midfielder.jsx";
@@ -42,8 +41,8 @@ function App() {
                 <Route path="/predictions" element={<ScorePrediction />} />
                 <Route path="/leaguetable" element={<LeagueTable />} />
                 <Route path="/teams/" element={<Teams />} />
-                <Route path="/teams/:id" element={<TeamStats />} />
-                <Route path="/players/:id" element={<PlayerStats />} />
+                <Route path="/teams/:id" element={<TeamDetails />} />
+                <Route path="/players/:id" element={<PlayerDetails />} />
                 <Route path="/players/goalkeepers" element={<Goalkeepers /> }/>
                 <Route path="/players/defenders" element={<Defenders /> }/>
                 <Route path="/players/midfielders" element={<Midfielders /> }/>
