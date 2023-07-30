@@ -58,10 +58,18 @@ class TeamsList(APIView):
 
 class TeamDetail(APIView):
     def get(self, request, id):
-        url = f"https://api.sportmonks.com/v3/football/teams/{id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=venue;country"
+        url = f"https://api.sportmonks.com/v3/football/teams/{id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=venue;country;statistics.details.type"
         response = requests.get(url)
         data = response.json()
         team = data["data"]
+        
+        # Filter statistics for the desired season_id (21207)
+        season_id_to_filter = 21207
+        filtered_statistics = [statistic for statistic in team["statistics"] if statistic["season_id"] == season_id_to_filter]
+
+        # Update the team data with the filtered statistics
+        team["statistics"] = filtered_statistics
+        
         serializer = TeamDetailSerializer(team)
 
         return Response(serializer.data)
@@ -317,7 +325,7 @@ class TeamsComparison(APIView):
 
 class LatestFixtures(APIView):
     def get(self, request, team1_id, team2_id):
-        url = f"https://api.sportmonks.com/v3/football/fixtures/head-to-head/{team1_id}/{team2_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=scores;participants;statistics.type"
+        url = f"https://api.sportmonks.com/v3/football/fixtures/head-to-head/{team1_id}/{team2_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=scores;participants"
         response = requests.get(url)
         data = response.json()
         fixtures = data["data"]

@@ -26,6 +26,152 @@ class TeamDetailSerializer(serializers.Serializer):
     stadium_name = serializers.CharField(
         source='venue.name', max_length=100, default=None)
     capacity = serializers.IntegerField(source='venue.capacity', default=None)
+    matches_played = serializers.SerializerMethodField()
+    wins = serializers.SerializerMethodField()
+    draws = serializers.SerializerMethodField()
+    losses = serializers.SerializerMethodField()
+    goals = serializers.SerializerMethodField()
+    penalties = serializers.SerializerMethodField()
+    shots = serializers.SerializerMethodField()
+    possession = serializers.SerializerMethodField()
+    corners = serializers.SerializerMethodField()
+    dangerous_attacks = serializers.SerializerMethodField()
+    failed_to_score = serializers.SerializerMethodField()
+    tackles = serializers.SerializerMethodField()
+    goals_conceded = serializers.SerializerMethodField()
+    cleansheets = serializers.SerializerMethodField()
+    highest_rated = serializers.SerializerMethodField()
+    fouls = serializers.SerializerMethodField()
+    yellows = serializers.SerializerMethodField()
+    reds = serializers.SerializerMethodField()
+    results = serializers.CharField(max_length=100, default="W D L W W")
+    
+    def get_matches_played(self, instance):
+        wins = self.get_wins(instance) or 0
+        draws = self.get_draws(instance) or 0
+        losses = self.get_losses(instance) or 0
+
+        matches_played = wins + draws + losses
+        return matches_played
+    
+    def get_wins(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'team-wins':
+                    return detail['value']['all']['count']
+
+    def get_draws(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'team-draws':
+                    return detail['value']['all']['count']
+
+    def get_losses(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'team-lost':
+                    return detail['value']['all']['count']
+
+    def get_goals(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'goals':
+                    return detail['value']['all']['count']
+
+    def get_penalties(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'penalties':
+                    return detail['value']['scored']
+
+    def get_shots(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'shots':
+                    return detail['value']['average']
+
+    def get_possession(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'ball-possession':
+                    return detail['value']['average']
+
+    def get_corners(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'corners':
+                    return detail['value']['count']
+
+    def get_dangerous_attacks(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'dangerous-attacks':
+                    return detail['value']['count']
+
+    def get_failed_to_score(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'failed-toscore':
+                    return detail['value']['all']['count']
+
+    def get_tackles(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'tackles':
+                    return detail['value']['average']
+
+    def get_goals_conceded(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'goals-conceded':
+                    return detail['value']['all']['count']
+
+    def get_cleansheets(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'cleansheets':
+                    return detail['value']['all']['count']
+
+    def get_highest_rated(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'highest-rated-player':
+                    return detail['value']['rating'] and detail['value']['player_name']
+
+    def get_fouls(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'fouls':
+                    return detail['value']['count']
+
+    def get_yellows(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'yellowcards':
+                    return detail['value']['count']
+
+    def get_reds(self, instance):
+        statistics = instance.get('statistics', [])
+        for stat in statistics:
+            for detail in stat.get('details', []):
+                if detail['type']['code'] == 'redcards':
+                    return detail['value']['count']
 
 
 class PlayerListSerializer(serializers.Serializer):
@@ -366,7 +512,7 @@ class PlayerDetailsSerializer(serializers.Serializer):
             for detail in stats.get('details', []):
                 if detail['type']['code'] == 'error-lead-to-goal':
                     return detail['value']['total']
-                
+
     def get_yellows(self, instance):
         statistics = instance.get('statistics', [])
         for stats in statistics:
@@ -576,7 +722,8 @@ class FixturesSerializer(serializers.Serializer):
         if len(participants) > 1:
             return self.get_team_logo(participants[1])
         return None
-    
+
+
 class TeamInfoSerializer(serializers.Serializer):
     team1 = serializers.SerializerMethodField()
     team2 = serializers.SerializerMethodField()
@@ -584,7 +731,8 @@ class TeamInfoSerializer(serializers.Serializer):
     team2_country = serializers.SerializerMethodField()
     team1_logo = serializers.SerializerMethodField()
     team2_logo = serializers.SerializerMethodField()
-    
+
+
 class TeamsComparisonSerializer (serializers.Serializer):
     team1 = serializers.SerializerMethodField()
     team2 = serializers.SerializerMethodField()
@@ -625,15 +773,15 @@ class TeamsComparisonSerializer (serializers.Serializer):
                 elif participant.get("country_id") == 462:
                     return "England"
         return None
-    
+
     def get_team1_country(self, obj):
         team1_id = int(self.context.get("team1_id"))
         return self.get_team_country_by_id(obj, team1_id)
-    
+
     def get_team2_country(self, obj):
         team2_id = int(self.context.get("team2_id"))
         return self.get_team_country_by_id(obj, team2_id)
-    
+
     def get_team_logo_by_id(self, fixture, participant_id):
         for participant in fixture.get("participants", []):
             if participant.get("id") == participant_id:
@@ -663,16 +811,18 @@ class TeamsComparisonSerializer (serializers.Serializer):
             if score.get("participant_id") == team2_id and score.get("description") == "CURRENT":
                 goals += int(score.get("score", {}).get("goals", 0))
         return goals
-    
+
     def get_team1_clean_sheets(self, fixture):
         team1_id = int(self.context.get("team1_id"))
         clean_sheets = 0
 
         # Check if the team1_id exists in the participants list
-        team1_participant = next((participant for participant in fixture.get("participants", []) if participant.get("id") == team1_id), None)
+        team1_participant = next((participant for participant in fixture.get(
+            "participants", []) if participant.get("id") == team1_id), None)
 
         # Check if the team1 has no goals in the scores list
-        team1_has_goals = any(score.get("score", {}).get("goals", 0) > 0 for score in fixture.get("scores", []) if score.get("participant_id") == team1_id)
+        team1_has_goals = any(score.get("score", {}).get("goals", 0) > 0 for score in fixture.get(
+            "scores", []) if score.get("participant_id") == team1_id)
 
         if team1_participant and not team1_has_goals:
             clean_sheets = 1
@@ -684,10 +834,12 @@ class TeamsComparisonSerializer (serializers.Serializer):
         clean_sheets = 0
 
         # Check if the team2_id exists in the participants list
-        team2_participant = next((participant for participant in fixture.get("participants", []) if participant.get("id") == team2_id), None)
+        team2_participant = next((participant for participant in fixture.get(
+            "participants", []) if participant.get("id") == team2_id), None)
 
         # Check if the team2 has no goals in the scores list
-        team2_has_goals = any(score.get("score", {}).get("goals", 0) > 0 for score in fixture.get("scores", []) if score.get("participant_id") == team2_id)
+        team2_has_goals = any(score.get("score", {}).get("goals", 0) > 0 for score in fixture.get(
+            "scores", []) if score.get("participant_id") == team2_id)
 
         if team2_participant and not team2_has_goals:
             clean_sheets = 1
@@ -730,6 +882,7 @@ class TeamsComparisonSerializer (serializers.Serializer):
             uk_date_str = datetime_obj.strftime("%d/%m/%Y")
             return uk_date_str
         return None
+
 
 class LatestFixturesSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -777,7 +930,7 @@ class LatestFixturesSerializer(serializers.Serializer):
             if participant.get("meta", {}).get("location") == "away":
                 return self.get_team_logo(participant)
         return None
-    
+
     def get_home_score(self, obj):
         scores = obj.get("scores", [])
         for score in scores:

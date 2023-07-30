@@ -24,6 +24,8 @@ const FixtureDetails = () => {
   const { id } = useParams(); // Fetch the fixture ID from the URL
   const [fixture, setFixture] = useState(null);
   const [headToHeadData, setHeadToHeadData] = useState(null);
+  const [team1Data, setTeam1Data] = useState(null);
+  const [team2Data, setTeam2Data] = useState(null);
   const [latestFixtures, setLatestFixtures] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [isLoading, setIsLoading] = useState(true); // Add loading indicator state
@@ -44,6 +46,27 @@ const FixtureDetails = () => {
 
     fetchFixtureData();
   }, [id]);
+
+  useEffect(() => {
+    if (fixture && fixture.participants) {
+      const { participants } = fixture;
+      const team1Data_ID = participants[0].id;
+      const team2Data_ID = participants[1].id;
+
+      const fetchTeamData = async (teamID, setTeamData) => {
+        try {
+          const response = await fetch(`/api/teams/${teamID}`);
+          const data = await response.json();
+          setTeamData(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchTeamData(team1Data_ID, setTeam1Data);
+      fetchTeamData(team2Data_ID, setTeam2Data);
+    }
+  }, [fixture]);
 
   useEffect(() => {
     // Fetch head-to-head data from your Django API
@@ -104,7 +127,8 @@ const FixtureDetails = () => {
     return <div>Loading...</div>;
   }
 
-  const getColorForResult = (result) => {
+  const getColorForResult = (teamData) => {
+    const result = teamData?.results || ""; // Use empty string as a fallback if results is not available
     if (result === "W") {
       return "#8cf58c"; // For "W", use green color
     } else if (result === "D") {
@@ -112,24 +136,8 @@ const FixtureDetails = () => {
     } else if (result === "L") {
       return "#fd3030"; // For "L", use red color
     } else {
-      return "black"; // Default to black color for any other result
+      return "green"; // Default to black color for any other result
     }
-  };
-
-  // Sample fake data for Team 1
-  const team1Data = {
-    logo: "https://cdn.sportmonks.com/images/soccer/teams/30/3422.png",
-    name: "Palmeiras",
-    country: "Brazil",
-    last5Results: ["W", "D", "L", "W", "L"],
-  };
-
-  // Sample fake data for Team 2
-  const team2Data = {
-    logo: "https://cdn.sportmonks.com/images/soccer/teams/23/5463.png",
-    name: "Cuiabá",
-    country: "Brazil",
-    last5Results: ["L", "W", "D", "L", "W"],
   };
 
   return (
@@ -191,17 +199,13 @@ const FixtureDetails = () => {
                     Last 5 Results
                   </Typography>
                 </Grid>
-                {team1Data.last5Results.map((result, index) => (
-                  <Grid key={index} item>
                     <Typography
                       variant="body1"
                       fontWeight={500}
-                      style={{ color: getColorForResult(result) }}
+                      style={{ color: getColorForResult(team1Data) }}
                     >
-                      {result}
+                      {team1Data?.results}
                     </Typography>
-                  </Grid>
-                ))}
               </Grid>
             </Grid>
 
@@ -246,20 +250,15 @@ const FixtureDetails = () => {
                     Last 5 Results
                   </Typography>
                 </Grid>
-                {team2Data.last5Results.map((result, index) => (
-                  <Grid key={index} item>
                     <Typography
                       variant="body1"
                       fontWeight={500}
-                      style={{ color: getColorForResult(result) }}
+                      style={{ color: getColorForResult(team2Data) }}
                     >
-                      {result}
+                      {team2Data?.results}
                     </Typography>
-                  </Grid>
-                ))}
               </Grid>
             </Grid>
-
             {/* Add Tabs */}
             <Grid item xs={12} marginTop={5}>
               <Tabs
@@ -307,7 +306,7 @@ const FixtureDetails = () => {
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                            {team1Data?.matches_played}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
@@ -317,14 +316,14 @@ const FixtureDetails = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                          {team2Data?.matches_played}
                           </Typography>
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                          {team1Data?.wins}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
@@ -334,14 +333,14 @@ const FixtureDetails = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                          {team2Data?.wins}
                           </Typography>
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                          {team1Data?.draws}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
@@ -351,14 +350,14 @@ const FixtureDetails = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                          {team2Data?.draws}
                           </Typography>
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                          {team1Data?.losses}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
@@ -368,7 +367,7 @@ const FixtureDetails = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                          {team2Data?.losses}
                           </Typography>
                         </TableCell>
                       </TableRow>

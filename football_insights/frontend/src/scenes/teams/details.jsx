@@ -8,7 +8,7 @@ const TeamDetails = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/teamstats/" + id);
+      const response = await fetch("/api/teams/" + id);
       const data = await response.json();
       setTeams(data);
     };
