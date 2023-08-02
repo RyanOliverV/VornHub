@@ -127,8 +127,7 @@ const FixtureDetails = () => {
     return <div>Loading...</div>;
   }
 
-  const getColorForResult = (teamData) => {
-    const result = teamData?.results || ""; // Use empty string as a fallback if results is not available
+  const getColorForResult = (result) => {
     if (result === "W") {
       return "#8cf58c"; // For "W", use green color
     } else if (result === "D") {
@@ -136,7 +135,7 @@ const FixtureDetails = () => {
     } else if (result === "L") {
       return "#fd3030"; // For "L", use red color
     } else {
-      return "green"; // Default to black color for any other result
+      return "black"; // Default to black color for any other result
     }
   };
 
@@ -199,13 +198,19 @@ const FixtureDetails = () => {
                     Last 5 Results
                   </Typography>
                 </Grid>
-                    <Typography
-                      variant="body1"
-                      fontWeight={500}
-                      style={{ color: getColorForResult(team1Data) }}
-                    >
-                      {team1Data?.results}
-                    </Typography>
+                {headToHeadData?.team1_form.map((result, index) => (
+                  <Typography
+                    key={index}
+                    variant="body1"
+                    fontWeight={500}
+                    style={{
+                      color: getColorForResult(result),
+                      marginRight: "2px", // Add some right margin for spacing
+                    }}
+                  >
+                    {result}
+                  </Typography>
+                ))}
               </Grid>
             </Grid>
 
@@ -250,13 +255,19 @@ const FixtureDetails = () => {
                     Last 5 Results
                   </Typography>
                 </Grid>
-                    <Typography
-                      variant="body1"
-                      fontWeight={500}
-                      style={{ color: getColorForResult(team2Data) }}
-                    >
-                      {team2Data?.results}
-                    </Typography>
+                {headToHeadData?.team2_form.map((result, index) => (
+                  <Typography
+                    key={index}
+                    variant="body1"
+                    fontWeight={500}
+                    style={{
+                      color: getColorForResult(result),
+                      marginRight: "2px", // Add some right margin for spacing
+                    }}
+                  >
+                    {result}
+                  </Typography>
+                ))}
               </Grid>
             </Grid>
             {/* Add Tabs */}
@@ -316,14 +327,14 @@ const FixtureDetails = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                          {team2Data?.matches_played}
+                            {team2Data?.matches_played}
                           </Typography>
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                          {team1Data?.wins}
+                            {team1Data?.wins}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
@@ -333,14 +344,14 @@ const FixtureDetails = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                          {team2Data?.wins}
+                            {team2Data?.wins}
                           </Typography>
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                          {team1Data?.draws}
+                            {team1Data?.draws}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
@@ -350,14 +361,14 @@ const FixtureDetails = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                          {team2Data?.draws}
+                            {team2Data?.draws}
                           </Typography>
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                          {team1Data?.losses}
+                            {team1Data?.losses}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
@@ -367,14 +378,14 @@ const FixtureDetails = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                          {team2Data?.losses}
+                            {team2Data?.losses}
                           </Typography>
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                            {headToHeadData?.team1_position}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
@@ -384,7 +395,7 @@ const FixtureDetails = () => {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            0
+                          {headToHeadData?.team2_position}
                           </Typography>
                         </TableCell>
                       </TableRow>
@@ -524,86 +535,86 @@ const FixtureDetails = () => {
               {latestFixtures.map((fixture) => (
                 <Grid item xs={12} key={fixture.id}>
                   <Box border="1px solid white" overflow="hidden" width="80%">
-                  <TableContainer>
-                    <Table
-                      sx={{
-                        bgcolor: colors.primary[400],
-                        width: "100%",
-                      }}
-                    >
-                      <TableBody>
-                        {/* Fixture Date Row */}
-                        <TableRow>
-                          <TableCell
-                            align="center"
-                            colSpan={3}
-                            sx={{ borderBottom: "none" }} // Remove the bottom border for the header cell
-                          >
-                            {fixture.date}
-                          </TableCell>
-                        </TableRow>
-                        {/* Fixture Time Row */}
-                        <TableRow>
-                          <TableCell
-                            align="center"
-                            sx={{
-                              width: "40%",
-                              fontSize: "0.9rem",
-                            }}
-                          >
-                            <img
-                              src={fixture.home_team_logo}
-                              style={{
-                                margin: "5px",
-                                maxWidth: "30px",
-                                verticalAlign: "middle",
-                              }}
-                              alt="Team Logo"
-                            />
-                            {fixture.home_team}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{
-                              width: "20%",
-                              fontSize: "0.9rem",
-                            }}
-                          >
-                            <span
-                              style={{
-                                margin: "10px",
-                                padding: "10px",
-                                borderRadius: "4px",
-                                border: `1px solid ${colors.primary[300]}`,
-                                backgroundColor: colors.primary[400],
-                                width: "100%",
+                    <TableContainer>
+                      <Table
+                        sx={{
+                          bgcolor: colors.primary[400],
+                          width: "100%",
+                        }}
+                      >
+                        <TableBody>
+                          {/* Fixture Date Row */}
+                          <TableRow>
+                            <TableCell
+                              align="center"
+                              colSpan={3}
+                              sx={{ borderBottom: "none" }} // Remove the bottom border for the header cell
+                            >
+                              {fixture.date}
+                            </TableCell>
+                          </TableRow>
+                          {/* Fixture Time Row */}
+                          <TableRow>
+                            <TableCell
+                              align="center"
+                              sx={{
+                                width: "40%",
+                                fontSize: "0.9rem",
                               }}
                             >
-                              {fixture.home_score} - {fixture.away_score}
-                            </span>
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{
-                              width: "40%",
-                              fontSize: "0.9rem",
-                            }}
-                          >
-                            <img
-                              src={fixture.away_team_logo}
-                              style={{
-                                margin: "5px",
-                                maxWidth: "30px",
-                                verticalAlign: "middle",
+                              <img
+                                src={fixture.home_team_logo}
+                                style={{
+                                  margin: "5px",
+                                  maxWidth: "30px",
+                                  verticalAlign: "middle",
+                                }}
+                                alt="Team Logo"
+                              />
+                              {fixture.home_team}
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              sx={{
+                                width: "20%",
+                                fontSize: "0.9rem",
                               }}
-                              alt="Team Logo"
-                            />
-                            {fixture.away_team}
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                            >
+                              <span
+                                style={{
+                                  margin: "10px",
+                                  padding: "10px",
+                                  borderRadius: "4px",
+                                  border: `1px solid ${colors.primary[300]}`,
+                                  backgroundColor: colors.primary[400],
+                                  width: "100%",
+                                }}
+                              >
+                                {fixture.home_score} - {fixture.away_score}
+                              </span>
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              sx={{
+                                width: "40%",
+                                fontSize: "0.9rem",
+                              }}
+                            >
+                              <img
+                                src={fixture.away_team_logo}
+                                style={{
+                                  margin: "5px",
+                                  maxWidth: "30px",
+                                  verticalAlign: "middle",
+                                }}
+                                alt="Team Logo"
+                              />
+                              {fixture.away_team}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </Box>
                 </Grid>
               ))}

@@ -240,7 +240,7 @@ class FixtureDetail(APIView):
 
 class TeamsComparison(APIView):
     def get(self, request, team1_id, team2_id):
-        url = f"https://api.sportmonks.com/v3/football/fixtures/head-to-head/{team1_id}/{team2_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=scores;participants;statistics.type"
+        url = f"https://api.sportmonks.com/v3/football/fixtures/head-to-head/{team1_id}/{team2_id}?api_token=LP0bSTLjwbckzKjAF0H5R32iOf7ABTSOkyesIV5XcFg4FDVjBnY40mkg9uSu&include=scores;participants.latest;statistics.type"
         response = requests.get(url)
         data = response.json()
         fixtures = data["data"]
@@ -264,6 +264,10 @@ class TeamsComparison(APIView):
         team2_country = serialized_data[0]["team2_country"]
         team1_logo = serialized_data[0]["team1_logo"]
         team2_logo = serialized_data[0]["team2_logo"]
+        team1_position = serialized_data[0]["team1_position"]
+        team2_position = serialized_data[0]["team2_position"]
+        team1_form = serialized_data[0]["team1_form"]
+        team2_form = serialized_data[0]["team2_form"]
         # Loop through the serialized data to calculate total goals for each team
         team1_goals_total = 0
         team2_goals_total = 0
@@ -308,6 +312,10 @@ class TeamsComparison(APIView):
             "team2_country": team2_country,
             "team1_logo": team1_logo,
             "team2_logo": team2_logo,
+            "team1_position": team1_position,
+            "team2_position": team2_position,
+            "team1_form": team1_form,
+            "team2_form": team2_form,
             "matches_played": fixture_count,
             "team1_wins": team1_wins,
             "team1_draws": team1_draws,

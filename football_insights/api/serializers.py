@@ -740,6 +740,8 @@ class TeamsComparisonSerializer (serializers.Serializer):
     team2_country = serializers.SerializerMethodField()
     team1_logo = serializers.SerializerMethodField()
     team2_logo = serializers.SerializerMethodField()
+    team1_position = serializers.SerializerMethodField()
+    team2_position = serializers.SerializerMethodField()
     team1_goals = serializers.SerializerMethodField()
     team2_goals = serializers.SerializerMethodField()
     result_info = serializers.CharField(default=None)
@@ -749,6 +751,8 @@ class TeamsComparisonSerializer (serializers.Serializer):
     away_team = serializers.SerializerMethodField()
     home_score = serializers.SerializerMethodField()
     away_score = serializers.SerializerMethodField()
+    team1_form = serializers.SerializerMethodField()
+    team2_form = serializers.SerializerMethodField()
     date = serializers.SerializerMethodField()
 
     def get_team_name_by_id(self, fixture, participant_id):
@@ -795,6 +799,20 @@ class TeamsComparisonSerializer (serializers.Serializer):
     def get_team2_logo(self, obj):
         team2_id = int(self.context.get("team2_id"))
         return self.get_team_logo_by_id(obj, team2_id)
+
+    def get_team_position_by_id(self, fixture, participant_id):
+        for participant in fixture.get("participants", []):
+            if participant.get("id") == participant_id:
+                return participant.get("meta", {}).get("position")
+        return None
+
+    def get_team1_position(self, obj):
+        team1_id = int(self.context.get("team1_id"))
+        return self.get_team_position_by_id(obj, team1_id)
+
+    def get_team2_position(self, obj):
+        team2_id = int(self.context.get("team2_id"))
+        return self.get_team_position_by_id(obj, team2_id)
 
     def get_team1_goals(self, fixture):
         team1_id = int(self.context.get("team1_id"))
@@ -874,6 +892,34 @@ class TeamsComparisonSerializer (serializers.Serializer):
                 return score.get("score", {}).get("goals")
         return None
 
+    def calculate_team_form(self, matches):  # Add self parameter
+        form = []
+        last_5_matches = matches[-5:]  # Get the last 5 matches
+        for match in last_5_matches:
+            result_info = match.get("result_info")
+            if result_info:
+                if "won" in result_info:
+                    form.append("W")
+                elif "draw" in result_info:
+                    form.append("D")
+                else:
+                    form.append("L")
+        return form
+
+    def get_team1_form(self, obj):
+        participant_id = int(self.context.get("team1_id"))
+        for participant in obj.get("participants", []):
+            if participant.get("id") == participant_id:
+                latest_matches = participant.get("latest")
+                return self.calculate_team_form(latest_matches)
+    
+    def get_team2_form(self, obj):
+        participant_id = int(self.context.get("team2_id"))
+        for participant in obj.get("participants", []):
+            if participant.get("id") == participant_id:
+                latest_matches = participant.get("latest")
+                return self.calculate_team_form(latest_matches)
+            
     def get_date(self, obj):
         starting_at = obj.get("starting_at")
         if starting_at:
