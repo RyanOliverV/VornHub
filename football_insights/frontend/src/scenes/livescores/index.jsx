@@ -22,7 +22,7 @@ const Livescores = () => {
 
   const HoverTableRow = styled(TableRow)(({ theme }) => ({
     "&:hover": {
-      backgroundColor: theme.palette.primary.light,
+      backgroundColor: colors.primary[600],
       cursor: "pointer",
     },
   }));
@@ -40,7 +40,7 @@ const Livescores = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/livescores/");
+        const response = await fetch("/api/livescores-list/");
         const data = await response.json();
         setFixtures(data);
       } catch (error) {
@@ -62,6 +62,24 @@ const Livescores = () => {
     groupedFixtures[date].push(fixture);
   });
 
+  const formatDate = (inputDate) => {
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+
+    const dateParts = inputDate.split('/');
+    const formattedDate = new Date(
+      parseInt(dateParts[2]),
+      parseInt(dateParts[1]) - 1,
+      parseInt(dateParts[0])
+    );
+
+    return formattedDate.toLocaleDateString('en-US', options);
+  };
+
   return (
     <Box style={{ margin: "20px", display: "flex", justifyContent: "center" }}>
       <Box style={{ width: "100%", maxWidth: 1000 }}>
@@ -69,7 +87,7 @@ const Livescores = () => {
           {Object.entries(groupedFixtures).map(([date, fixtures]) => (
             <div key={date}>
               <Typography m="20px 0px" variant="h4" component="h4">
-                {date}
+                {formatDate(date)}
               </Typography>
               <TableContainer>
                 <Table sx={{ bgcolor: colors.primary[400] }}>

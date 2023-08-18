@@ -23,6 +23,8 @@ const LiveStats = () => {
   const colors = tokens(theme.palette.mode);
   const { id } = useParams(); // Fetch the fixture ID from the URL
   const [fixture, setFixture] = useState(null);
+  const [fixtureDetail, setFixtureDetail] = useState(null);
+  const [liveScore, setLiveScore] = useState(null);
   const [headToHeadData, setHeadToHeadData] = useState(null);
   const [team1Data, setTeam1Data] = useState(null);
   const [team2Data, setTeam2Data] = useState(null);
@@ -34,7 +36,7 @@ const LiveStats = () => {
     // Fetch fixture data from your Django API
     const fetchFixtureData = async () => {
       try {
-        const response = await fetch(`/api/livescores/${id}`);
+        const response = await fetch(`/api/fixtures/${id}`);
         const data = await response.json();
         setFixture(data);
       } catch (error) {
@@ -45,6 +47,48 @@ const LiveStats = () => {
     };
 
     fetchFixtureData();
+  }, [id]);
+
+  useEffect(() => {
+    // Fetch fixture data from your Django API
+    const fetchFixtureDetailData = async () => {
+      try {
+        const response = await fetch(`/api/fixture/${id}`);
+        const data = await response.json();
+        setFixtureDetail(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false); // Update loading state regardless of success/failure
+      }
+    };
+
+    fetchFixtureDetailData();
+  }, [id]);
+
+  useEffect(() => {
+    // Fetch fixture data from your Django API
+    const fetchLiveScoreData = async () => {
+      try {
+        const response = await fetch(`/api/livescores-detail/`);
+        const data = await response.json();
+        // Filter the data array to include only the fixture with the matching ID
+        const numberId = Number(id); // Convert id to number
+        const filteredFixture = data.find(
+          (item) => Number(item.id) === numberId
+        );
+        console.log("API Data:", data);
+        console.log("Filtered Data:", filteredFixture);
+
+        setLiveScore(filteredFixture);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLiveScoreData();
   }, [id]);
 
   useEffect(() => {
@@ -270,6 +314,41 @@ const LiveStats = () => {
                 ))}
               </Grid>
             </Grid>
+            <Grid marginTop={5} container>
+  <Grid
+    item
+    xs={4}
+    container
+    alignItems="center"
+    justifyContent="center"
+  >
+    <Typography variant="h3" color={colors.grey[100]} style={{ border: "1px solid #ffffff", padding: "10px 15px" }}>
+      {fixtureDetail?.team1_score || 0}
+    </Typography>
+  </Grid>
+  <Grid
+    item
+    xs={2}
+    container
+    alignItems="center"
+    justifyContent="center"
+  >
+    <Typography variant="h3" color={colors.grey[100]}>
+      -
+    </Typography>
+  </Grid>
+  <Grid
+    item
+    xs={4}
+    container
+    alignItems="center"
+    justifyContent="center"
+  >
+    <Typography variant="h3" color={colors.grey[100]} style={{ border: "1px solid #ffffff", padding: "10px 15px" }}>
+      {fixtureDetail?.team2_score || 0}
+    </Typography>
+  </Grid>
+</Grid>
             {/* Add Tabs */}
             <Grid item xs={12} marginTop={5}>
               <Tabs
@@ -289,8 +368,8 @@ const LiveStats = () => {
                   },
                 }}
               >
-                <Tab label="Season Overview" />
-                <Tab label="Head To Head" />
+                <Tab label="Stats" />
+                {/* <Tab label="Head To Head" /> */}
               </Tabs>
             </Grid>
 
@@ -308,94 +387,196 @@ const LiveStats = () => {
                   >
                     <TableHead>
                       <TableRow>
-                        <TableCell align="center">Overall Stats</TableCell>
-                        <TableCell align="center">Season Overview</TableCell>
-                        <TableCell align="center">Overall Stats</TableCell>
+                        <TableCell align="center">Overall</TableCell>
+                        <TableCell align="center">Stats</TableCell>
+                        <TableCell align="center">Overall</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            {team1Data?.matches_played}
+                            {fixtureDetail?.team1_shots_on_target || 0}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            Matches Played
+                            Shots On Target
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            {team2Data?.matches_played}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell align="center">
-                          <Typography variant="h6" color={colors.grey[100]}>
-                            {team1Data?.wins}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="center">
-                          <Typography variant="h6" color={colors.grey[100]}>
-                            Wins
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="center">
-                          <Typography variant="h6" color={colors.grey[100]}>
-                            {team2Data?.wins}
+                            {fixtureDetail?.team2_shots_on_target || 0}
                           </Typography>
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            {team1Data?.draws}
+                            {fixtureDetail?.team1_shots_off_target || 0}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            Draws
+                            Shots Off Target
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            {team2Data?.draws}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell align="center">
-                          <Typography variant="h6" color={colors.grey[100]}>
-                            {team1Data?.losses}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="center">
-                          <Typography variant="h6" color={colors.grey[100]}>
-                            Losses
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="center">
-                          <Typography variant="h6" color={colors.grey[100]}>
-                            {team2Data?.losses}
+                            {fixtureDetail?.team2_shots_off_target || 0}
                           </Typography>
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            {headToHeadData?.team1_position}
+                            {fixtureDetail?.team1_shots_blocked || 0}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                            League Position
+                            Blocked Shots
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" color={colors.grey[100]}>
-                          {headToHeadData?.team2_position}
+                            {fixtureDetail?.team2_shots_blocked || 0}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team1_possession || 0}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            Possession %
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team2_possession || 0}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team1_corners || 0}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            Corners
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team2_corners || 0}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team1_offsides || 0}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            Offsides
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team2_offsides || 0}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team1_fouls || 0}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            Fouls
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team2_fouls || 0}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team1_throw_ins || 0}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            Throw Ins
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team2_throw_ins || 0}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team1_yellow_cards || 0}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            Yellow Cards
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team2_yellow_cards || 0}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team1_crosses || 0}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            Crosses
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team2_crosses || 0}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team1_saves || 0}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            Goalkeeper Saves
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Typography variant="h6" color={colors.grey[100]}>
+                            {fixtureDetail?.team2_saves || 0}
                           </Typography>
                         </TableCell>
                       </TableRow>

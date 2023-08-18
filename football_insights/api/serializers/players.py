@@ -25,11 +25,16 @@ class PlayerListSerializer(serializers.Serializer):
 class PlayerDetailsSerializer(serializers.Serializer):
     id = serializers.IntegerField(default=None)
     name = serializers.CharField(max_length=100, default=None)
+    logo = serializers.CharField(
+        source='image_path', max_length=100, default=None)
     age = serializers.SerializerMethodField()
-    team = serializers.CharField(
-        source='team.name', max_length=100, default=None)
+    team = serializers.SerializerMethodField()
+    country = serializers.CharField(
+        source='country.name', max_length=100, default=None)
     position = serializers.CharField(
         source='detailedposition.name', max_length=100, default=None)
+    alternatePosition = serializers.CharField(
+        source='position.name', max_length=100, default=None)
     appearances = serializers.SerializerMethodField()
     minutes = serializers.SerializerMethodField()
     rating = serializers.SerializerMethodField()
@@ -79,6 +84,11 @@ class PlayerDetailsSerializer(serializers.Serializer):
             return age
         return None
 
+    def get_team(self, instance):
+        teams = instance.get('teams', [])
+        for team in teams:
+            return team['team']['name']
+                
     def get_appearances(self, instance):
         statistics = instance.get('statistics', [])
         for stats in statistics:
@@ -356,3 +366,8 @@ class PlayerDetailsSerializer(serializers.Serializer):
                 if detail['type']['code'] == 'yellowred-cards':
                     return detail['value']['total']
         return None
+
+class PlayerHighlights(serializers.Serializer):
+    id = serializers.IntegerField(default=None)
+    name = serializers.CharField(max_length=100, default=None)
+    logo = serializers.CharField(max_length=100, default=None)

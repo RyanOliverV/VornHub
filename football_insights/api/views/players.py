@@ -34,7 +34,7 @@ def get_players_by_position(all_players, position_id):
 
 class PlayerDetail(APIView):
     def get(self, request, id):
-        url = f"https://api.sportmonks.com/v3/football/players/{id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=teams;metadata;detailedPosition;statistics.details.type&filters=playerStatisticSeasons:21207"
+        url = f"https://api.sportmonks.com/v3/football/players/{id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=teams.team;country;metadata;detailedPosition;position;statistics.details.type&filters=playerStatisticSeasons:21207"
         response = requests.get(url)
         data = response.json()
         player = data["data"]
@@ -149,3 +149,13 @@ class CentreForwardList(APIView):
         serialized_players = [
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
+
+class PlayerHighlights(APIView):
+    def get(self, request):
+        url = "https://api.sportmonks.com/v3/football/topscorers/seasons/19734?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;type&page=20"
+        response = requests.get(url)
+        data = response.json()
+        players = data["data"]
+        serializer = PlayerDetailsSerializer(players)
+
+        return Response(players)

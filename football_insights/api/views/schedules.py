@@ -2,7 +2,7 @@ import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ..serializers.schedules import FixturesSerializer, TeamsComparisonSerializer, LatestFixturesSerializer
+from ..serializers.schedules import FixturesSerializer, FixturesDetailSerializer, TeamsComparisonSerializer, LatestFixturesSerializer
 import datetime
 
 
@@ -23,9 +23,9 @@ class FixtureList(APIView):
         return Response(serializer.data)
 
 
-class FixtureDetail(APIView):
+class FixtureInfo(APIView):
     def get(self, request, id):
-        url = f"https://api.sportmonks.com/v3/football/fixtures/{id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=participants"
+        url = f"https://api.sportmonks.com/v3/football/fixtures/{id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=participants;statistics.type"
         response = requests.get(url)
         data = response.json()
         fixture = data["data"]
@@ -33,11 +33,21 @@ class FixtureDetail(APIView):
         # serializer = FixturesSerializer(fixtures, many=True)
 
         return Response(fixture)
+    
+class FixtureDetail(APIView):
+    def get(self, request, id):
+        url = f"https://api.sportmonks.com/v3/football/fixtures/{id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=participants;statistics.type"
+        response = requests.get(url)
+        data = response.json()
+        fixture = data["data"]
 
+        serializer = FixturesDetailSerializer(fixture)
 
-class LiveScores(APIView):
+        return Response(serializer.data)
+
+class LiveScoresList(APIView):
     def get(self, request):
-        url = "https://api.sportmonks.com/v3/football/livescores?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&filters=fixtureLeagues:636&include=league;scores;participants;venue"
+        url = "https://api.sportmonks.com/v3/football/livescores?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&filters=fixtureLeagues:648&include=league;scores;participants;venue"
         response = requests.get(url)
         data = response.json()
 
@@ -82,6 +92,52 @@ class LiveScores(APIView):
                 else:
                     return Response([])
 
+class LiveScoresDetail(APIView):
+    def get(self, request):
+        url = "https://api.sportmonks.com/v3/football/livescores?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&filters=fixtureLeagues:648&include=statistics.type;league;scores;participants;venue"
+        response = requests.get(url)
+        data = response.json()
+
+        try:
+            livescores = data["data"]
+            serializer = FixturesSerializer(livescores, many=True)
+            return Response(livescores)
+        except KeyError:
+            # Fetch upcoming fixtures after the current date
+            today = datetime.date.today().strftime("%Y-%m-%d")
+            fixtures_url = "https://api.sportmonks.com/v3/football/seasons/21207?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=fixtures.scores;fixtures.venue;fixtures.participants"
+            fixtures_response = requests.get(fixtures_url)
+            fixtures_data = fixtures_response.json()
+            fixtures = fixtures_data["data"]["fixtures"]
+
+            # Filter fixtures for the current day
+            current_day_fixtures = [
+                fixture for fixture in fixtures
+                if fixture.get("starting_at") and fixture["starting_at"].startswith(today)
+            ]
+
+            if current_day_fixtures:
+                serializer = FixturesSerializer(
+                    current_day_fixtures, many=True)
+                return Response(current_day_fixtures)
+            else:
+                # Fetch upcoming fixtures after the current date
+                upcoming_fixtures = [
+                    fixture for fixture in fixtures
+                    if fixture.get("starting_at") and fixture["starting_at"] > today
+                ]
+
+                # Sort upcoming fixtures by date
+                sorted_upcoming_fixtures = sorted(
+                    upcoming_fixtures, key=lambda f: f["starting_at"])
+
+                if sorted_upcoming_fixtures:
+                    # Retrieve only the next available fixture
+                    next_fixtures = [sorted_upcoming_fixtures[0]]
+                    serializer = FixturesSerializer(next_fixtures, many=True)
+                    return Response(serializer.data)
+                else:
+                    return Response([])
 
 class TeamsComparison(APIView):
     def get(self, request, team1_id, team2_id):

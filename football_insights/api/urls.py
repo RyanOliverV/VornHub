@@ -1,17 +1,18 @@
 from django.urls import path
 from .views.index import SeasonList
 from .views.teams import TeamsList, TeamDetail, SquadList
-from .views.players import PlayerList, PlayerDetail, GoalkeeperList, CentreBackList, FullBackList, DefensiveMidfielderList, AttackingMidfielderList, CentralMidfielderList, CentreForwardList, WingerList
+from .views.players import PlayerList, PlayerDetail, PlayerHighlights, GoalkeeperList, CentreBackList, FullBackList, DefensiveMidfielderList, AttackingMidfielderList, CentralMidfielderList, CentreForwardList, WingerList
 from .views.standings import LeagueTable, LiveLeagueTable
-from .views.schedules import FixtureList, FixtureDetail, LatestFixtures, LiveScores, TeamsComparison
+from .views.schedules import FixtureList, FixtureInfo, FixtureDetail, LatestFixtures, LiveScoresList, LiveScoresDetail, TeamsComparison
 
 urlpatterns = [
     path('teams/', TeamsList.as_view(), name='teams-api'),
     path('teams/<int:id>/', TeamDetail.as_view(), name='team-detail-api'),
     path('squads/<int:id>/', SquadList.as_view(), name='squad-detail-api'),
     path('players/', PlayerList.as_view(), name='players-api'),
-    path('playerstats/<int:id>/', PlayerDetail.as_view(),
+    path('players/<int:id>/', PlayerDetail.as_view(),
          name='player-detail-api'),
+    path('top-players/', PlayerHighlights.as_view()),
     path('goalkeepers/', GoalkeeperList.as_view(), name='goalkeepers-api'),
     path('centrebacks/', CentreBackList.as_view(), name='defenders-api'),
     path('fullbacks/', FullBackList.as_view(), name='midfielders-api'),
@@ -30,10 +31,12 @@ urlpatterns = [
     path('standings/<int:season_id>/', LeagueTable.as_view(),
          name='standings-api-with-season'),
     path('fixtures/', FixtureList.as_view(), name='fixtures-api'),
-    path('fixtures/<int:id>/', FixtureDetail.as_view()),
+    path('fixtures/<int:id>/', FixtureInfo.as_view()),
+    path('fixture/<int:id>/', FixtureDetail.as_view()),
     path('fixtures/<int:team1_id>/<int:team2_id>/',
          TeamsComparison.as_view()),
     path('latest-fixtures/<int:team1_id>/<int:team2_id>/',
          LatestFixtures.as_view()),
-    path('livescores/', LiveScores.as_view(), name='livescores-api'),
+    path('livescores-list/', LiveScoresList.as_view(), name='livescores-list-api'),
+    path('livescores-detail/', LiveScoresDetail.as_view(), name='livescores-detail-api'),
 ]

@@ -72,6 +72,8 @@ const FixtureDetails = () => {
     // Fetch head-to-head data from your Django API
     if (fixture && !isLoading) {
       const { participants } = fixture;
+      console.log('Fixture:', fixture);
+      console.log('Participants:', participants);
       const team1Data_ID = participants[0].id;
       const team2Data_ID = participants[1].id;
 

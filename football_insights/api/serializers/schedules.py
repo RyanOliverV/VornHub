@@ -80,6 +80,191 @@ class FixturesSerializer(serializers.Serializer):
             return self.get_team_logo(participants[1])
         return None
 
+class FixturesDetailSerializer(serializers.Serializer):
+    id = serializers.IntegerField(default=None)
+    team1 = serializers.SerializerMethodField()
+    team2 = serializers.SerializerMethodField()
+    team1_score = serializers.SerializerMethodField()
+    team2_score = serializers.SerializerMethodField()
+    team1_shots_on_target = serializers.SerializerMethodField()
+    team2_shots_on_target = serializers.SerializerMethodField()
+    team1_shots_off_target = serializers.SerializerMethodField()
+    team2_shots_off_target = serializers.SerializerMethodField()
+    team1_shots_blocked = serializers.SerializerMethodField()
+    team2_shots_blocked = serializers.SerializerMethodField()
+    team1_possession = serializers.SerializerMethodField()
+    team2_possession = serializers.SerializerMethodField()
+    team1_corners = serializers.SerializerMethodField()
+    team2_corners = serializers.SerializerMethodField()
+    team1_offsides = serializers.SerializerMethodField()
+    team2_offsides = serializers.SerializerMethodField()
+    team1_fouls = serializers.SerializerMethodField()
+    team2_fouls = serializers.SerializerMethodField()
+    team1_throw_ins = serializers.SerializerMethodField()
+    team2_throw_ins = serializers.SerializerMethodField()
+    team1_yellow_cards = serializers.SerializerMethodField()
+    team2_yellow_cards = serializers.SerializerMethodField()
+    team1_crosses = serializers.SerializerMethodField()
+    team2_crosses = serializers.SerializerMethodField()
+    team1_saves = serializers.SerializerMethodField()
+    team2_saves = serializers.SerializerMethodField()
+    
+    def get_team1(self, instance):
+        participants = instance.get("participants", [])
+        for participant in participants:
+            if participant.get("meta", {}).get("location") == "home":
+                return participant.get("name")
+
+    def get_team2(self, instance):
+        participants = instance.get("participants", [])
+        for participant in participants:
+            if participant.get("meta", {}).get("location") == "away":
+                return participant.get("name")
+            
+    def get_team1_score(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "goals" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)  # Return 0 as default if value is missing
+
+    def get_team2_score(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "goals" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)  # Return 0 as default if value is missing
+
+    def get_team1_shots_on_target(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "shots-on-target" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+    
+    def get_team2_shots_on_target(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "shots-on-target" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+            
+    def get_team1_shots_off_target(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "shots-off-target" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team2_shots_off_target(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "shots-off-target" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team1_shots_blocked(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "shots-blocked" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team2_shots_blocked(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "shots-blocked" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team1_possession(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "ball-possession" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team2_possession(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "ball-possession" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team1_corners(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "corners" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+    
+    def get_team2_corners(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "corners" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team1_offsides(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "offsides" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team2_offsides(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "offsides" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team1_fouls(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "fouls" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team2_fouls(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "fouls" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team1_throw_ins(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "throwins" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team2_throw_ins(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "throwins" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+            
+    def get_team1_yellow_cards(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "yellowcards" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team2_yellow_cards(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "yellowcards" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team1_crosses(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "total-crosses" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team2_crosses(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "total-crosses" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+
+    def get_team1_saves(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "saves" and statistic.get("location") == "home":
+                return statistic.get("data", {}).get("value", 0)
+    
+    def get_team2_saves(self, instance):
+        statistics = instance.get("statistics", [])
+        for statistic in statistics:
+            if statistic.get("type", {}).get("code") == "saves" and statistic.get("location") == "away":
+                return statistic.get("data", {}).get("value", 0)
+            
 class LatestFixturesSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     home_team = serializers.SerializerMethodField()
