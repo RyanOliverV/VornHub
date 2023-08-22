@@ -369,5 +369,6 @@ class PlayerDetailsSerializer(serializers.Serializer):
 
 class PlayerHighlights(serializers.Serializer):
     id = serializers.IntegerField(default=None)
-    name = serializers.CharField(max_length=100, default=None)
-    logo = serializers.CharField(max_length=100, default=None)
+    name = serializers.CharField(source='player.name', default=None)
+    logo = serializers.CharField(source='player.image_path', default=None)
+    total = serializers.CharField(default=None)

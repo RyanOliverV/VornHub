@@ -2,7 +2,7 @@ import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ..serializers.players import PlayerListSerializer, PlayerDetailsSerializer
+from ..serializers.players import PlayerListSerializer, PlayerDetailsSerializer, PlayerHighlights
 from rest_framework.pagination import PageNumberPagination
 
 
@@ -150,12 +150,92 @@ class CentreForwardList(APIView):
             player for player in serializer.data if player is not None]
         return Response(serialized_players)
 
-class PlayerHighlights(APIView):
+# class PlayerHighlights(APIView):
+#     def get(self, request):
+#         url = "https://api.sportmonks.com/v3/football/topscorers/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;type&filters=seasonTopscorerTypes:1601"
+#         response = requests.get(url)
+#         data = response.json()
+#         players = data["data"]
+        
+
+#         # serializer = PlayerDetailsSerializer(top_scorer)
+
+#         return Response(data)
+    
+class MostGoals(APIView):
     def get(self, request):
-        url = "https://api.sportmonks.com/v3/football/topscorers/seasons/19734?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;type&page=20"
+        url = "https://api.sportmonks.com/v3/football/topscorers/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;type&filters=seasonTopscorerTypes:208"
         response = requests.get(url)
         data = response.json()
         players = data["data"]
-        serializer = PlayerDetailsSerializer(players)
+        
+        top_scorer = players[0]
+        
+        serializer = PlayerHighlights(top_scorer)
+        
+        return Response(serializer.data)
 
-        return Response(players)
+class MostAssists(APIView):
+    def get(self, request):
+        url = "https://api.sportmonks.com/v3/football/topscorers/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;type&filters=seasonTopscorerTypes:209"
+        response = requests.get(url)
+        data = response.json()
+        players = data["data"]
+
+        top_scorer = players[0]
+        
+        serializer = PlayerHighlights(top_scorer)
+        
+        return Response(serializer.data)
+
+class MostPens(APIView):
+    def get(self, request):
+        url = "https://api.sportmonks.com/v3/football/topscorers/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;type&filters=seasonTopscorerTypes:1600"
+        response = requests.get(url)
+        data = response.json()
+        players = data["data"]
+        
+        top_scorer = players[0]
+        
+        serializer = PlayerHighlights(top_scorer)
+        
+        return Response(serializer.data)
+
+class MostPensMissed(APIView):
+    def get(self, request):
+        url = "https://api.sportmonks.com/v3/football/topscorers/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;type&filters=seasonTopscorerTypes:1601"
+        response = requests.get(url)
+        data = response.json()
+        players = data["data"]
+        
+        top_scorer = players[0]
+        
+        serializer = PlayerHighlights(top_scorer)
+        
+        return Response(serializer.data)
+    
+class MostYellowCards(APIView):
+    def get(self, request):
+        url = "https://api.sportmonks.com/v3/football/topscorers/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;type&filters=seasonTopscorerTypes:84"
+        response = requests.get(url)
+        data = response.json()
+        players = data["data"]
+        
+        top_scorer = players[0]
+        
+        serializer = PlayerHighlights(top_scorer)
+        
+        return Response(serializer.data)
+
+class MostRedCards(APIView):
+    def get(self, request):
+        url = "https://api.sportmonks.com/v3/football/topscorers/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;type&filters=seasonTopscorerTypes:83"
+        response = requests.get(url)
+        data = response.json()
+        players = data["data"]
+        
+        top_scorer = players[0]
+        
+        serializer = PlayerHighlights(top_scorer)
+        
+        return Response(serializer.data)

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views.index import SeasonList
 from .views.teams import TeamsList, TeamDetail, SquadList
-from .views.players import PlayerList, PlayerDetail, PlayerHighlights, GoalkeeperList, CentreBackList, FullBackList, DefensiveMidfielderList, AttackingMidfielderList, CentralMidfielderList, CentreForwardList, WingerList
+from .views.players import PlayerList, PlayerDetail, MostGoals, MostAssists, MostPens, MostPensMissed, MostRedCards, MostYellowCards, GoalkeeperList, CentreBackList, FullBackList, DefensiveMidfielderList, AttackingMidfielderList, CentralMidfielderList, CentreForwardList, WingerList
 from .views.standings import LeagueTable, LiveLeagueTable
 from .views.schedules import FixtureList, FixtureInfo, FixtureDetail, LatestFixtures, LiveScoresList, LiveScoresDetail, TeamsComparison
 
@@ -12,7 +12,12 @@ urlpatterns = [
     path('players/', PlayerList.as_view(), name='players-api'),
     path('players/<int:id>/', PlayerDetail.as_view(),
          name='player-detail-api'),
-    path('top-players/', PlayerHighlights.as_view()),
+    path('most-goals/', MostGoals.as_view()),
+    path('most-assists/', MostAssists.as_view()),
+     path('most-pens/', MostPens.as_view()),
+     path('most-pens-missed/', MostPensMissed.as_view()),
+     path('most-red-cards/', MostRedCards.as_view()),
+     path('most-yellow-cards/', MostYellowCards.as_view()),
     path('goalkeepers/', GoalkeeperList.as_view(), name='goalkeepers-api'),
     path('centrebacks/', CentreBackList.as_view(), name='defenders-api'),
     path('fullbacks/', FullBackList.as_view(), name='midfielders-api'),
