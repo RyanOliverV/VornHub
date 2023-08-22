@@ -11,7 +11,7 @@ import LiveScores from '../scenes/livescores/index.jsx';
 import LiveStats from '../scenes/livescores/stats.jsx';
 import Fixtures from '../scenes/fixtures/index.jsx';
 import FixtureDetails from '../scenes/fixtures/details.jsx';
-import ScorePrediction from "../scenes/scoreprediction/index.jsx";
+import MatchPrediction from "../scenes/matchprediction/index.jsx";
 import LeagueTable from '../scenes/leaguetable/index.jsx';
 import Teams from '../scenes/teams/index.jsx';
 import TeamDetails from "../scenes/teams/details.jsx";
@@ -38,7 +38,7 @@ function App() {
                 <Route path="/livescores/:id" element={<LiveStats />} />
                 <Route path="/fixtures" element={<Fixtures />} />
                 <Route path="/fixtures/:id" element={<FixtureDetails />} />
-                <Route path="/predictions" element={<ScorePrediction />} />
+                <Route path="/predictions" element={<MatchPrediction />} />
                 <Route path="/leaguetable" element={<LeagueTable />} />
                 <Route path="/teams/" element={<Teams />} />
                 <Route path="/teams/:id" element={<TeamDetails />} />

@@ -59,26 +59,28 @@ class FixturesSerializer(serializers.Serializer):
                 return score.get("score", {}).get("goals")
         return None
 
-    def get_team_logo(self, participant):
-        meta = participant.get("meta", {})
-        location = meta.get("location")
-        if location == "home":
-            return participant.get("image_path")
-        elif location == "away":
-            return participant.get("image_path")
-        return None
+    # def get_team_logo(self, participant):
+    #     meta = participant.get("meta", {})
+    #     location = meta.get("location")
+    #     if location == "home":
+    #         return participant.get("image_path")
+    #     elif location == "away":
+    #         return participant.get("image_path")
+    #     return None
 
     def get_team1_logo(self, obj):
         participants = obj.get("participants", [])
-        if len(participants) > 0:
-            return self.get_team_logo(participants[0])
-        return None
+        for participant in participants:
+            if participant.get("meta", {}).get("location") == "home":
+                return participant.get("image_path")
+        return None  # Return a default value if not found
 
     def get_team2_logo(self, obj):
         participants = obj.get("participants", [])
-        if len(participants) > 1:
-            return self.get_team_logo(participants[1])
-        return None
+        for participant in participants:
+            if participant.get("meta", {}).get("location") == "away":
+                return participant.get("image_path")
+        return None  # Return a default value if not found
 
 class FixturesDetailSerializer(serializers.Serializer):
     id = serializers.IntegerField(default=None)

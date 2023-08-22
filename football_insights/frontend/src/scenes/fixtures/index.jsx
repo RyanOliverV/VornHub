@@ -36,7 +36,7 @@ const Fixtures = () => {
 
   const [fixtures, setFixtures] = useState([]);
 
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -81,13 +81,18 @@ const Fixtures = () => {
   };
 
   return (
-    <Box style={{ margin: "20px", display: "flex", justifyContent: "center" }}>
+    <Box
+      m="20px 70px"
+      height="80vh"
+      display="flex"
+      style={{ overflow: "auto", display: "flex", justifyContent: "center" }}
+    >
       <Box style={{ width: "100%", maxWidth: 1000 }}>
-        <Box style={{ height: "90vh", overflow: "auto", paddingRight: "50px" }}>
+        <Box style={{ height: "90vh",paddingRight: "50px" }}>
           {Object.entries(groupedFixtures).map(([date, fixtures]) => (
             <div key={date}>
               <Typography m="20px 0px" variant="h4" component="h4">
-              {formatDate(date)}
+                {formatDate(date)}
               </Typography>
               <TableContainer>
                 <Table sx={{ bgcolor: colors.primary[400] }}>
@@ -95,25 +100,33 @@ const Fixtures = () => {
                     {fixtures.map((fixture) => (
                       <HoverTableRow
                         key={fixture.id}
-                        component={Link}
                         to={`/fixtures/${fixture.id}`}
                         style={{ textDecoration: "none", color: "inherit" }}
                       >
                         <TeamTableCell align="center">
-                          <img
-                            src={fixture.team1_logo}
-                            style={{
-                              margin: "5px",
-                              maxWidth: "30px",
-                              verticalAlign: "middle",
-                            }}
-                            alt="Team Logo"
-                          />
-                          {fixture.team1}
+                          <Link
+                            to={`/fixtures/${fixture.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            <img
+                              src={fixture.team1_logo}
+                              style={{
+                                margin: "5px",
+                                maxWidth: "30px",
+                                verticalAlign: "middle",
+                              }}
+                              alt="Team Logo"
+                            />
+                            {fixture.team1}
+                          </Link>
                         </TeamTableCell>
                         <ResultTableCell align="center">
+                        <Link
+      to={`/fixtures/${fixture.id}`}
+      style={{ textDecoration: "none", color: "inherit" }}
+    >
                           {fixture.home_score === null &&
-                          fixture.away_score === null ? (
+                            fixture.away_score === null ? (
                             <span
                               style={{
                                 margin: "10px",
@@ -140,18 +153,24 @@ const Fixtures = () => {
                               {fixture.home_score} - {fixture.away_score}
                             </span>
                           )}
+                          </Link>
                         </ResultTableCell>
                         <TeamTableCell align="center">
-                          <img
-                            src={fixture.team2_logo}
-                            style={{
-                              margin: "5px",
-                              maxWidth: "30px",
-                              verticalAlign: "middle",
-                            }}
-                            alt="Team Logo"
-                          />
-                          {fixture.team2}
+                          <Link
+                            to={`/fixtures/${fixture.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            <img
+                              src={fixture.team2_logo}
+                              style={{
+                                margin: "5px",
+                                maxWidth: "30px",
+                                verticalAlign: "middle",
+                              }}
+                              alt="Team Logo"
+                            />
+                            {fixture.team2}
+                          </Link>
                         </TeamTableCell>
                         {/* <TableCell
                           align="center"

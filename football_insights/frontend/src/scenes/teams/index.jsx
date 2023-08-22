@@ -23,7 +23,12 @@ const TeamsList = () => {
   teams.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <Box m="20px" style={{ height: '90vh', overflow: 'auto' }}>
+    <Box
+      m="20px 70px"
+      height="80vh"
+      display="flex"
+      style={{ overflow: "auto", display: "flex"}}
+    >
       <List>
         {teams.map((team) => (
           <Link to={`/teams/${team.id}`} style={{ textDecoration: 'none', color: 'inherit' }} key={team.id}>

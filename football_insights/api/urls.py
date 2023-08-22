@@ -4,6 +4,7 @@ from .views.teams import TeamsList, TeamDetail, SquadList
 from .views.players import PlayerList, PlayerDetail, MostGoals, MostAssists, MostPens, MostPensMissed, MostRedCards, MostYellowCards, GoalkeeperList, CentreBackList, FullBackList, DefensiveMidfielderList, AttackingMidfielderList, CentralMidfielderList, CentreForwardList, WingerList
 from .views.standings import LeagueTable, LiveLeagueTable
 from .views.schedules import FixtureList, FixtureInfo, FixtureDetail, LatestFixtures, LiveScoresList, LiveScoresDetail, TeamsComparison
+from .views.prediction import PredictionAPI
 
 urlpatterns = [
     path('teams/', TeamsList.as_view(), name='teams-api'),
@@ -44,4 +45,6 @@ urlpatterns = [
          LatestFixtures.as_view()),
     path('livescores-list/', LiveScoresList.as_view(), name='livescores-list-api'),
     path('livescores-detail/', LiveScoresDetail.as_view(), name='livescores-detail-api'),
+    path('predictions/', PredictionAPI.as_view(), name='predictions'),
+
 ]

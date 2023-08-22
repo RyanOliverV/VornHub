@@ -619,23 +619,113 @@ const TeamDetails = () => {
                     {squad.map((player, index) => (
                       <HoverTableRow
                         key={player.id}
-                        component={Link}
                         to={`/players/${player.id}`}
                         style={{ textDecoration: "none", color: "inherit" }}
                       >
-                        <TableCell>{player.name}</TableCell>
-                        <TableCell>{player.age}</TableCell>
-                        <TableCell>{player.appearances || 0}</TableCell>
-                        <TableCell>{player.minutes_played || 0}</TableCell>
-                        <TableCell>{player.goals || 0}</TableCell>
-                        <TableCell>{player.assists || 0}</TableCell>
-                        <TableCell>{player.pass_percentage || 0}%</TableCell>
-                        <TableCell>{player.key_passes || 0}</TableCell>
-                        <TableCell>{player.interceptions || 0}</TableCell>
-                        <TableCell>{player.tackles || 0}</TableCell>
-                        <TableCell>{player.clearances || 0}</TableCell>
-                        <TableCell>{player.yellow_cards || 0}</TableCell>
-                        <TableCell>{player.red_cards || 0}</TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.age}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.appearances || 0}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.minutes_played || 0}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.goals || 0}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.assists || 0}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.pass_percentage || 0}%
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.key_passes || 0}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.interceptions || 0}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.tackles || 0}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.clearances || 0}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.yellow_cards || 0}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/players/${player.id}`}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            {player.red_cards || 0}
+                          </Link>
+                        </TableCell>
                       </HoverTableRow>
                     ))}
                   </TableBody>

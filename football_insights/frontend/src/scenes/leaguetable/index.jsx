@@ -31,7 +31,7 @@ const LeagueTable = () => {
     direction: "asc",
   });
   
-  const [selectedSeason, setSelectedSeason] = useState("21207"); // Holds the selected season ID
+  const [selectedSeason, setSelectedSeason] = useState("21646"); // Holds the selected season ID
 
   // Fetch data when the selected season changes
   useEffect(() => {
@@ -40,7 +40,7 @@ const LeagueTable = () => {
 
   // Fetches the standings data based on the selected season
   const fetchData = async (season) => {
-    if (season === "21207") {
+    if (season === "21646") {
       // Fetch live standings if the selected season is the current season
       const response = await fetch("/api/live-standings/");
       const data = await response.json();
@@ -101,14 +101,14 @@ const LeagueTable = () => {
           label="Season_Select"
           onChange={handleSeasonChange}
         >
-          <MenuItem value="21207">2023</MenuItem>
-          <MenuItem value="19434">2022</MenuItem>
-          <MenuItem value="18215">2021</MenuItem>
-          <MenuItem value="16996">2020</MenuItem>
-          <MenuItem value="15759">2019</MenuItem>
-          <MenuItem value="12206">2018</MenuItem>
-          <MenuItem value="866">2017</MenuItem>
-          <MenuItem value="2280">2016</MenuItem>
+          <MenuItem value="21646">2023</MenuItem>
+          <MenuItem value="19734">2022</MenuItem>
+          <MenuItem value="18378">2021</MenuItem>
+          <MenuItem value="17420">2020</MenuItem>
+          <MenuItem value="16036">2019</MenuItem>
+          <MenuItem value="12962">2018</MenuItem>
+          <MenuItem value="6397">2017</MenuItem>
+          <MenuItem value="13">2016</MenuItem>
         </Select>
       </FormControl>
 
@@ -242,31 +242,98 @@ const LeagueTable = () => {
               {sortedStandings.map((team) => (
                 <HoverTableRow
                   key={team.id}
-                  component={Link}
                   to={`/teams/${team.id}`}
                   style={{ textDecoration: "none", color: "inherit" }}
                 >
-                  <TableCell>{team.position}</TableCell>
-                  <TableCell>
-                    <Box display="flex" alignItems="center">
-                      {/* Team logo and name */}
-                      <img
-                        src={team.logo}
-                        style={{ marginRight: "10px", maxWidth: "40px" }}
-                        alt="Team Logo"
-                      />
-                      {team.team}
-                    </Box>
-                  </TableCell>
-                  {/* League Table values */}
-                  <TableCell>{team.played_value}</TableCell>
-                  <TableCell>{team.won_value}</TableCell>
-                  <TableCell>{team.drawn_value}</TableCell>
-                  <TableCell>{team.lost_value}</TableCell>
-                  <TableCell>{team.gf_value}</TableCell>
-                  <TableCell>{team.ga_value}</TableCell>
-                  <TableCell>{team.gd_value}</TableCell>
-                  <TableCell>{team.points}</TableCell>
+                        <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {team.position}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Box display="flex" alignItems="center">
+            {/* Team logo and name */}
+            <img
+              src={team.logo}
+              style={{ marginRight: "10px", maxWidth: "40px" }}
+              alt="Team Logo"
+            />
+            {team.team}
+          </Box>
+        </Link>
+      </TableCell>
+      {/* League Table values */}
+      <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {team.played_value}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {team.won_value}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {team.drawn_value}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {team.lost_value}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {team.gf_value}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {team.ga_value}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {team.gd_value}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`/teams/${team.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          {team.points}
+        </Link>
+      </TableCell>
                 </HoverTableRow>
               ))}
             </TableBody>

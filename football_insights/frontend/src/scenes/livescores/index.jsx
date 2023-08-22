@@ -81,7 +81,12 @@ const Livescores = () => {
   };
 
   return (
-    <Box style={{ margin: "20px", display: "flex", justifyContent: "center" }}>
+    <Box
+    m="20px 70px"
+    height="80vh"
+    display="flex"
+    style={{ overflow: "auto", display: "flex", justifyContent: "center" }}
+  >
       <Box style={{ width: "100%", maxWidth: 1000 }}>
         <Box style={{ height: "90vh", overflow: "auto", paddingRight: "50px" }}>
           {Object.entries(groupedFixtures).map(([date, fixtures]) => (
@@ -95,50 +100,61 @@ const Livescores = () => {
                     {fixtures.map((fixture) => (
                       <HoverTableRow
                         key={fixture.id}
-                        component={
+                                                to={
                           fixture.home_score !== null &&
-                          fixture.away_score !== null
-                            ? "div"
-                            : Link
-                        }
-                        to={
-                          fixture.home_score !== null &&
-                          fixture.away_score !== null
+                            fixture.away_score !== null
                             ? `/livescores/${fixture.id}`
                             : `/fixtures/${fixture.id}`
                         }
                         onClick={() =>
                           fixture.home_score !== null &&
-                          fixture.away_score !== null
+                            fixture.away_score !== null
                             ? navigate(`/livescores/${fixture.id}`)
                             : null
                         }
                         style={
                           fixture.home_score !== null &&
-                          fixture.away_score !== null
+                            fixture.away_score !== null
                             ? {
-                                cursor: "pointer",
-                                textDecoration: "none",
-                                color: "inherit",
-                              }
+                              cursor: "pointer",
+                              textDecoration: "none",
+                              color: "inherit",
+                            }
                             : { textDecoration: "none", color: "inherit" }
                         }
                       >
                         <TeamTableCell align="center">
-                          <img
-                            src={fixture.team1_logo}
-                            style={{
-                              margin: "5px",
-                              maxWidth: "30px",
-                              verticalAlign: "middle",
-                            }}
-                            alt="Team Logo"
-                          />
-                          {fixture.team1}
+                          <Link
+                            to={
+                              fixture.home_score !== null && fixture.away_score !== null
+                                ? `/livescores/${fixture.id}`
+                                : `/fixtures/${fixture.id}`
+                            }
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            <img
+                              src={fixture.team1_logo}
+                              style={{
+                                margin: "5px",
+                                maxWidth: "30px",
+                                verticalAlign: "middle",
+                              }}
+                              alt="Team Logo"
+                            />
+                            {fixture.team1}
+                          </Link>
                         </TeamTableCell>
                         <ResultTableCell align="center">
+                        <Link
+          to={
+            fixture.home_score !== null && fixture.away_score !== null
+              ? `/livescores/${fixture.id}`
+              : `/fixtures/${fixture.id}`
+          }
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
                           {fixture.home_score === null &&
-                          fixture.away_score === null ? (
+                            fixture.away_score === null ? (
                             <span
                               style={{
                                 margin: "10px",
@@ -165,18 +181,28 @@ const Livescores = () => {
                               {fixture.home_score} - {fixture.away_score}
                             </span>
                           )}
+                          </Link>
                         </ResultTableCell>
                         <TeamTableCell align="center">
-                          <img
-                            src={fixture.team2_logo}
-                            style={{
-                              margin: "5px",
-                              maxWidth: "30px",
-                              verticalAlign: "middle",
-                            }}
-                            alt="Team Logo"
-                          />
-                          {fixture.team2}
+                          <Link
+                            to={
+                              fixture.home_score !== null && fixture.away_score !== null
+                                ? `/livescores/${fixture.id}`
+                                : `/fixtures/${fixture.id}`
+                            }
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          >
+                            <img
+                              src={fixture.team2_logo}
+                              style={{
+                                margin: "5px",
+                                maxWidth: "30px",
+                                verticalAlign: "middle",
+                              }}
+                              alt="Team Logo"
+                            />
+                            {fixture.team2}
+                          </Link>
                         </TeamTableCell>
                         {/* <TableCell
                           align="center"

@@ -17,7 +17,7 @@ class LeagueTable(APIView):
 
 class LiveLeagueTable(APIView):
     def get(self, request):
-        url = "https://api.sportmonks.com/v3/football/standings/live/leagues/648?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=participant;details.type"
+        url = "https://api.sportmonks.com/v3/football/standings/live/leagues/8?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=participant;details.type"
         response = requests.get(url)
         data = response.json()
         standings = data["data"]

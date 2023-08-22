@@ -7,7 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 
 
 def get_all_players():
-    url = "https://api.sportmonks.com/v3/football/teams/seasons/21207?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL"
+    url = "https://api.sportmonks.com/v3/football/teams/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL"
     response = requests.get(url)
     data = response.json()
     teams = data["data"]
@@ -16,7 +16,7 @@ def get_all_players():
 
     for team in teams:
         team_id = team["id"]
-        squad_url = f"https://api.sportmonks.com/v3/football/squads/seasons/21207/teams/{team_id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;details.type"
+        squad_url = f"https://api.sportmonks.com/v3/football/squads/seasons/21646/teams/{team_id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;details.type"
         squad_response = requests.get(squad_url)
         squad_data = squad_response.json()
         squad = squad_data["data"]
@@ -34,7 +34,7 @@ def get_players_by_position(all_players, position_id):
 
 class PlayerDetail(APIView):
     def get(self, request, id):
-        url = f"https://api.sportmonks.com/v3/football/players/{id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=teams.team;country;metadata;detailedPosition;position;statistics.details.type&filters=playerStatisticSeasons:21207"
+        url = f"https://api.sportmonks.com/v3/football/players/{id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=teams.team;country;metadata;detailedPosition;position;statistics.details.type&filters=playerStatisticSeasons:21646"
         response = requests.get(url)
         data = response.json()
         player = data["data"]

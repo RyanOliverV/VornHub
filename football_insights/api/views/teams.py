@@ -6,7 +6,7 @@ from ..serializers.teams import TeamSerializer, TeamDetailSerializer, SquadListS
 
 class TeamsList(APIView):
     def get(self, request):
-        url = "https://api.sportmonks.com/v3/football/teams/seasons/21207?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL"
+        url = "https://api.sportmonks.com/v3/football/teams/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL"
         response = requests.get(url)
         data = response.json()
         teams = data["data"]
@@ -23,7 +23,7 @@ class TeamDetail(APIView):
         team = data["data"]
         
         # Filter statistics for the desired season_id (21207)
-        season_id_to_filter = 21207
+        season_id_to_filter = 21646
         filtered_statistics = [statistic for statistic in team["statistics"] if statistic["season_id"] == season_id_to_filter]
 
         # Update the team data with the filtered statistics
@@ -35,7 +35,7 @@ class TeamDetail(APIView):
 
 class SquadList(APIView):
     def get(self, request, id):
-        url = f"https://api.sportmonks.com/v3/football/squads/seasons/21207/teams/{id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;details.type"
+        url = f"https://api.sportmonks.com/v3/football/squads/seasons/21646/teams/{id}?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=player;details.type"
         response = requests.get(url)
         data = response.json()
         

@@ -766,9 +766,7 @@ const PlayerDetails = () => {
                             </TableCell>
                             <TableCell align="left">
                               <Typography variant="h6" color={colors.grey[100]}>
-                                {player.accuratePassesPercentage.toFixed(2) ||
-                                  0}
-                                %
+                              {((player.accuratePassesPercentage) || 0).toFixed(2)}%
                               </Typography>
                             </TableCell>
                           </TableRow>
@@ -1233,9 +1231,7 @@ const PlayerDetails = () => {
                             </TableCell>
                             <TableCell align="left">
                               <Typography variant="h6" color={colors.grey[100]}>
-                                {player.accuratePassesPercentage.toFixed(2) ||
-                                  0}
-                                %
+                              {((player.accuratePassesPercentage) || 0).toFixed(2)}%
                               </Typography>
                             </TableCell>
                           </TableRow>

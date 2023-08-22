@@ -9,7 +9,7 @@ import datetime
 class FixtureList(APIView):
     def get(self, request):
         # Define the API endpoint URL to fetch detailed information about fixtures
-        url = "https://api.sportmonks.com/v3/football/seasons/21207?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=fixtures.scores;fixtures.venue;fixtures.participants"
+        url = "https://api.sportmonks.com/v3/football/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=fixtures.scores;fixtures.venue;fixtures.participants"
         # Send a GET request to the API endpoint
         response = requests.get(url)
         data = response.json()
@@ -58,11 +58,11 @@ class LiveScoresList(APIView):
         except KeyError:
             # Fetch upcoming fixtures after the current date
             today = datetime.date.today().strftime("%Y-%m-%d")
-            fixtures_url = "https://api.sportmonks.com/v3/football/seasons/21207?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=fixtures.scores;fixtures.venue;fixtures.participants"
+            fixtures_url = "https://api.sportmonks.com/v3/football/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=fixtures.scores;fixtures.venue;fixtures.participants"
             fixtures_response = requests.get(fixtures_url)
             fixtures_data = fixtures_response.json()
             fixtures = fixtures_data["data"]["fixtures"]
-
+            
             # Filter fixtures for the current day
             current_day_fixtures = [
                 fixture for fixture in fixtures
@@ -105,7 +105,7 @@ class LiveScoresDetail(APIView):
         except KeyError:
             # Fetch upcoming fixtures after the current date
             today = datetime.date.today().strftime("%Y-%m-%d")
-            fixtures_url = "https://api.sportmonks.com/v3/football/seasons/21207?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=fixtures.scores;fixtures.venue;fixtures.participants"
+            fixtures_url = "https://api.sportmonks.com/v3/football/seasons/21646?api_token=SfgFq9wDOHoDn9T5XiLZsSf2Id2rJ7lTgafxIoxOfDbwczPBrHTaQxtcmYUL&include=fixtures.scores;fixtures.venue;fixtures.participants"
             fixtures_response = requests.get(fixtures_url)
             fixtures_data = fixtures_response.json()
             fixtures = fixtures_data["data"]["fixtures"]

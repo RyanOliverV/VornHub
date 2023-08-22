@@ -521,12 +521,12 @@ class SquadListSerializer(serializers.Serializer):
     yellow_cards = serializers.SerializerMethodField()
     red_cards = serializers.SerializerMethodField()
     
+
     def get_age(self, obj):
-        if 'player' in obj and 'date_of_birth' in obj['player']:
+        if 'player' in obj and 'date_of_birth' in obj['player'] and obj['player']['date_of_birth']:
             birth_date = datetime.strptime(obj['player']['date_of_birth'], '%Y-%m-%d')
             today = datetime.now()
-            age = today.year - birth_date.year - \
-                ((today.month, today.day) < (birth_date.month, birth_date.day))
+            age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
             return age
         return None
     
