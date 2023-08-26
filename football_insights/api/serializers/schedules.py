@@ -13,19 +13,17 @@ class FixturesSerializer(serializers.Serializer):
     team1_logo = serializers.SerializerMethodField()
     team2_logo = serializers.SerializerMethodField()
 
-    def get_team1(self, obj):
-        team_names = obj.get("name")
-        if team_names:
-            team_list = team_names.split(" vs ")
-            return team_list[0]
-        return None
+    def get_team1(self, instance):
+            participants = instance.get("participants", [])
+            for participant in participants:
+                if participant.get("meta", {}).get("location") == "home":
+                    return participant.get("name")
 
-    def get_team2(self, obj):
-        team_names = obj.get("name")
-        if team_names:
-            team_list = team_names.split(" vs ")
-            return team_list[1]
-        return None
+    def get_team2(self, instance):
+        participants = instance.get("participants", [])
+        for participant in participants:
+            if participant.get("meta", {}).get("location") == "away":
+                return participant.get("name")
 
     def get_date(self, obj):
         starting_at = obj.get("starting_at")

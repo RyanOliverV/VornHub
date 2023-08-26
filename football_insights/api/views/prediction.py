@@ -5,6 +5,8 @@ import pandas as pd
 import pickle
 from ..model.helperFunctions import pipeline
 import os
+from ..serializers.predictions import PredictionsSerializer
+
 
 class PredictionAPI(APIView):
     def get(self, request):
@@ -42,7 +44,7 @@ class PredictionAPI(APIView):
 "Tottenham" : "Tottenham Hotspur",
 "Newcastle Utd" : "Newcastle United",
 "Wolves" : "Wolverhampton Wanderers",
-"Brighton" : "Brighton and Hove Albion",
+"Brighton" : "Brighton & Hove Albion",
 "Huddersfield" : "Huddersfield Town",
 "Newcastle Utd" : "Newcastle United"}
 
@@ -67,8 +69,9 @@ class PredictionAPI(APIView):
 
         # Reset the index to start from 0 and go up sequentially
         data.reset_index(drop=True, inplace=True)
-
-        print(data)
+        
+        # Keep a copy of the original fixture information
+        original_data = data.copy()
         
         #keep the output as same dataframe
         data = pipeline(data, rollingDict, ohe_loaded_encoder, ord_loaded_encoder, train=False, date=True)
@@ -77,14 +80,21 @@ class PredictionAPI(APIView):
         data["output"] = loaded_rf_model.predict(data)
         
         # Map numerical predictions to labels
-        label_mapping = {0: 'L', 1: 'D', 2: 'W'}
+        output_label_mapping = {0: 'L', 1: 'D', 2: 'W'}
         
-        data["output"] = data["output"].map(label_mapping)
-
-        # Reset the index to start from 0 and go up sequentially
-        data.reset_index(drop=True, inplace=True)
-               
+        venue_label_mapping = {0: 'Away', 1: 'Home'}
+        
+        data["output"] = data["output"].map(output_label_mapping)
+        
+        data["venue"] = data["venue"].map(venue_label_mapping)
+        
+        # Add the fixture information back to the predicted data
+        data = pd.concat([original_data, data], axis=1)
+        
         # Convert predictions to a dictionary
-        predictions_dict = data["output"].to_dict()
+        predictions_dict = data[["team", "opponent", "date", "venue", "output"]].to_dict(orient='records')
 
-        return Response(predictions_dict)
+        # Serialize the predictions dictionary
+        serializer = PredictionsSerializer(predictions_dict, many=True)
+        
+        return Response(serializer.data)

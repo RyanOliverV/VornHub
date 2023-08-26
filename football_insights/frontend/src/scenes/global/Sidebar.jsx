@@ -184,8 +184,8 @@ const Sidebar = () => {
               handleItemClick={handleItemClick}
             />
             <Item
-              id = "Score Predictions"
-              title="Score Predictions"
+              id = "Match Predictions"
+              title="Match Predictions"
               to="/predictions"
               icon={<ScoreboardOutlinedIcon />}
               selected={selected}

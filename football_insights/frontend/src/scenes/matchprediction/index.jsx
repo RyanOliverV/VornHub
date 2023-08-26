@@ -27,15 +27,15 @@ const MatchPrediction = () => {
   }));
 
   const TeamTableCell = styled(TableCell)({
-    width: "40%",
+    width: "30%",
   });
 
   const ResultTableCell = styled(TableCell)({
-    width: "20%",
+    width: "15%",
   });
 
   const [fixtures, setFixtures] = useState([]);
-
+  const [predictions, setPredictions] = useState([]);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +49,20 @@ const MatchPrediction = () => {
     };
 
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchPredictionsData = async () => {
+      try {
+        const response = await fetch("/api/predictions/");
+        const data = await response.json();
+        setPredictions(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchPredictionsData();
   }, []);
 
   // Group fixtures by date
@@ -80,6 +94,29 @@ const MatchPrediction = () => {
     return formattedDate.toLocaleDateString('en-US', options);
   };
 
+  
+  const getPredictionForFixture = (fixture, predictions) => {
+    const matchingPrediction = predictions.find(
+      prediction =>
+        prediction.date === fixture.date &&
+        ((prediction.team1 === fixture.team1 && prediction.team2 === fixture.team2) ||
+        (prediction.team1 === fixture.team2 && prediction.team2 === fixture.team1))
+    );
+    return matchingPrediction || null;
+  };
+
+  const getColorForResult = (result) => {
+    if (result === "W") {
+      return "#8cf58c"; // For "W", use green color
+    } else if (result === "D") {
+      return "#fdab3d"; // For "D", use orange color
+    } else if (result === "L") {
+      return "#fd3030"; // For "L", use red color
+    } else {
+      return "black"; // Default to black color for any other result
+    }
+  };
+
   return (
     <Box
       m="20px 70px"
@@ -96,31 +133,51 @@ const MatchPrediction = () => {
               </Typography>
               <TableContainer>
                 <Table sx={{ bgcolor: colors.primary[400] }}>
+                  {/* Table head */}
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">Home Team</TableCell>
+                      <TableCell align="center">Home Prediction</TableCell>
+                      <TableCell align="center">Result</TableCell>
+                      <TableCell align="center">Away Prediction</TableCell>
+                      <TableCell align="center">Away Team</TableCell>
+                    </TableRow>
+                  </TableHead>
                   <TableBody>
-                    {fixtures.map((fixture) => (
-                      <HoverTableRow
-                        key={fixture.id}
-                        to={`/fixtures/${fixture.id}`}
-                        style={{ textDecoration: "none", color: "inherit" }}
-                      >
-                        <TeamTableCell align="center">
-                          <Link
-                            to={`/fixtures/${fixture.id}`}
-                            style={{ textDecoration: "none", color: "inherit" }}
-                          >
-                            <img
-                              src={fixture.team1_logo}
-                              style={{
-                                margin: "5px",
-                                maxWidth: "30px",
-                                verticalAlign: "middle",
-                              }}
-                              alt="Team Logo"
-                            />
-                            {fixture.team1}
-                          </Link>
-                        </TeamTableCell>
-                        <ResultTableCell align="center">
+                    {fixtures.map((fixture) => {
+                      const prediction = getPredictionForFixture(fixture, predictions);
+                      return (
+                        <HoverTableRow
+                          key={fixture.id}
+                          to={`/fixtures/${fixture.id}`}
+                          style={{ textDecoration: "none", color: "inherit" }}
+                        >
+                          <TeamTableCell align="center">
+                            <Link
+                              to={`/fixtures/${fixture.id}`}
+                              style={{ textDecoration: "none", color: "inherit" }}
+                            >
+                              <img
+                                src={fixture.team1_logo}
+                                style={{
+                                  margin: "5px",
+                                  maxWidth: "30px",
+                                  verticalAlign: "middle",
+                                }}
+                                alt="Team Logo"
+                              />
+                              {fixture.team1}
+                            </Link>
+                          </TeamTableCell>
+                          <ResultTableCell align="center">
+                            {/* Render your result cell with prediction info */}
+                            {prediction && (
+                              <span style={{ color: getColorForResult(prediction.team1_prediction) }}>
+                                {prediction.team1_prediction}
+                              </span>
+                            )}
+                          </ResultTableCell>
+                          <ResultTableCell align="center">
                         <Link
       to={`/fixtures/${fixture.id}`}
       style={{ textDecoration: "none", color: "inherit" }}
@@ -155,25 +212,34 @@ const MatchPrediction = () => {
                           )}
                           </Link>
                         </ResultTableCell>
-                        <TeamTableCell align="center">
-                          <Link
-                            to={`/fixtures/${fixture.id}`}
-                            style={{ textDecoration: "none", color: "inherit" }}
-                          >
-                            <img
-                              src={fixture.team2_logo}
-                              style={{
-                                margin: "5px",
-                                maxWidth: "30px",
-                                verticalAlign: "middle",
-                              }}
-                              alt="Team Logo"
-                            />
-                            {fixture.team2}
-                          </Link>
-                        </TeamTableCell>
-                      </HoverTableRow>
-                    ))}
+                          <ResultTableCell align="center">
+                            {/* Render your result cell with prediction info */}
+                            {prediction && (
+                              <span style={{ color: getColorForResult(prediction.team2_prediction) }}>
+                                {prediction.team2_prediction}
+                              </span>
+                            )}
+                          </ResultTableCell>
+                          <TeamTableCell align="center">
+                            <Link
+                              to={`/fixtures/${fixture.id}`}
+                              style={{ textDecoration: "none", color: "inherit" }}
+                            >
+                              <img
+                                src={fixture.team2_logo}
+                                style={{
+                                  margin: "5px",
+                                  maxWidth: "30px",
+                                  verticalAlign: "middle",
+                                }}
+                                alt="Team Logo"
+                              />
+                              {fixture.team2}
+                            </Link>
+                          </TeamTableCell>
+                        </HoverTableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>
