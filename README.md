@@ -1,2 +1,9 @@
 ![Logo](/football_insights/frontend/static/images/logo.png?raw=true "VornMetrics Logo")
-A website that provides users with real-time access to comprehensive football statistics from the Premier League. Our platform offers a wealth of information, including player line-ups and in-depth analytics such as shots, passes completed, possession percentage, and expected goals (xG).
+
+This project aimed to develop a comprehensive football statistics platform that offers a blend
+of historical and real-time data while utilizing machine learning to predict future match
+outcomes. The project was guided by five key objectives: designing a user-friendly interface,
+curating accurate and comprehensive data, implementing real-time match updates,
+researching, and employing machine learning algorithms, and evaluating the predictive
+performance of the chosen algorithm. Employing a technology stack that includes Django for
+the back end and React for the front end, the project successfully meets its objectives.
