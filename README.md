@@ -1,4 +1,4 @@
-![Logo](/football_insights/frontend/static/images/logo.png?raw=true "VornMetrics Logo")
+![Logo](/public/images/logo.png?raw=true "VornMetrics Logo")
 
 This project aimed to develop a comprehensive football statistics platform that offers a blend
 of historical and real-time data while utilizing machine learning to predict future match
